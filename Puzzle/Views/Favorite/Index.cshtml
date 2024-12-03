@@ -1,0 +1,90 @@
+﻿@model ProjectViewModel
+
+@{ ViewData["Title"] = "پروژه‌ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.ShowName = true;
+    ViewData["ShowDesigner"] = true;
+
+    int j = 1;
+    int k = 1;
+
+    if (Model.TotalPage > 0)
+    {
+        if (Model.TotalPage > 10 && Model.Page > 5)
+        {
+            j = Model.Page - 4;
+        }
+        if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+        {
+            j = Model.TotalPage - 8;
+        }
+        k = j + 9;
+    } }
+
+
+<div id="Project">
+    <div class="card">
+
+        <div class="FormBoxTitle" style="margin: 0px -20px;">
+            <label>@ViewBag.FormTitle</label>
+        </div>
+
+        <partial name="_ProjectPartial" model="Model.Project" />
+
+    </div>
+</div>
+
+<div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>توضیحات</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <input id="description-id" hidden />
+        <textarea class="popup-textarea"></textarea>
+        <button class="btn-popup-save">ذخیره</button>
+    </div>
+</div>
+
+@if (Model.TotalPage > 0)
+{
+<div class="puzzle-pagination d-flex">
+    <div class="pagination-previous">
+        @{ string paginationUrl = null;
+            if (Model.Page != 1)
+            {
+                paginationUrl = "/favorite?page=" + (Model.Page - 1);
+            } }
+        <a href="@paginationUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 6l6 6l-6 6" />
+            </svg>
+        </a>
+    </div>
+        <div class="pagination-number">
+                @for (; j < k && j <= Model.TotalPage; j++)
+                {
+                    if (j == Model.Page)
+                    {
+<label class="pagination-number-active"><a href="/favorite?page=@j">@j</a></label> }
+                    else
+                    {
+<label><a href="/favorite?page=@j">@j</a></label>}
+                }
+        </div>
+        <div class="pagination-next">
+            @{ 
+                paginationUrl = null;
+                if (Model.Page != 1)
+                {
+                    paginationUrl = "/favorite?page=" + (Model.Page + 1);
+                } }
+            <a href="@paginationUrl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                </svg>
+            </a>
+        </div>
+</div>}

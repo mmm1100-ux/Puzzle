@@ -1,0 +1,461 @@
+﻿@model CustomerViewModel
+@{
+    ViewData["Title"] = "ویرایش";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="FormBox box-shadow">
+    <div class="FormBoxTitle" style="padding: 0px;">
+        <label class="btn-project-edit">ویرایش</label>
+        @foreach (var item in Model.Child)
+        {
+            <label class="repair-box-head" id="repair-index-@item.Id">@item.Title</label>
+        }
+        <label class="btn-project-chat">پیام</label>
+        <label class="btn-project-media">تصاویر</label>
+    </div>
+    <div id="project-chat-box" hidden>
+        <partial name="_ConversationPartial" model="Model.Conversation" />
+    </div>
+
+    @foreach (var item in Model.Child)
+    {
+        <div class="repair-box" id="repair-box-index-@item.Id" style="display: none;">
+            <partial name="_RepairPartial" model="item" />
+        </div>
+    }
+
+
+    <div class="FormBoxInner" id="media-box" style="padding-top:15px;" hidden>
+    </div>
+    <div class="FormBoxInner" id="info">
+        <form id="update-project-form">
+            <input type="hidden" value="@Model.Id" name="Id" id="projectId" />
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label class="Mobile_Label">شماره تماس</label>
+
+                <input asp-for="Mobile" autocomplete="off" maxlength="11" onblur="FindByMobile()" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>شماره شبکه اجتماعی</label>
+                <input asp-for="Social" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>نام خانوادگی</label>
+                <input asp-for="LastName" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>نام</label>
+                <input asp-for="FirstName" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>تلفن ثابت</label>
+                <input asp-for="Phone" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>تاریخ تولد</label>
+                <input asp-for="Birthday" value="@Model.Birthday?.ToShortDateString()" class="date-picker" id="date-picker-@(new Random().Next())" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-12 col-xs-12">
+                <label>آدرس</label>
+                <input asp-for="Address" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-12 col-xs-12">
+                <label>شماره معرف</label>
+                <input asp-for="Presenter" disabled />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-12 col-xs-12">
+                <label>اعتبار</label>
+                <input value="@Model.Credit.ToString("N0")" readonly />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-12 col-xs-12">
+                <label>@(Model.Balance == 0 ? "تسویه" : Model.Balance > 0 ? "بستانکار" : "بدهکار")</label>
+                <input value="@Math.Abs(Model.Balance).ToString("N0")" readonly />
+            </div>
+            <div class="legend"><span>اطلاعات پروژه</span></div>
+            <div class="FormDiv col-100-5">
+                <label>عنوان</label>
+                <input asp-for="Title" />
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>دسته بندی</label>
+                <select asp-for="ProjectCategory">
+
+                    @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.Amendment || Model.ProjectCategory == Enums.Enum.ProjectCategory.Edit)
+                    {
+                        <option value="@Enums.Enum.ProjectCategory.Amendment">اصلاحیه</option>
+                        <option value="@Enums.Enum.ProjectCategory.Edit">تغییرات</option>
+                    }
+                    else
+                    {
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.ModernCabinet)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.ModernCabinet">کابینت مدرن</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.ClassicCabinet)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.ClassicCabinet">کابینت کلاسیک</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.Decor)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.Decor">دکور</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.ModernVray)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.ModernVray">مدرن وی ری</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.ClassicVray)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.ClassicVray">کلاسیک وی ری</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.DecorVray)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.DecorVray">دکور وی ری</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.PlusModernCabinet)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.PlusModernCabinet">مدرن پلاس</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.PlusClassicCabinet)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.PlusClassicCabinet">کلاسیک پلاس</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.TwoDimensional)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.TwoDimensional">دو بعدی</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.CNC_Other)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.CNC_Other">سی ان سی دو بعدی - سایر</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.Amendment)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.Amendment">اصلاحیه</option>
+                        }
+
+                        @if (Model.ProjectCategory == Enums.Enum.ProjectCategory.Edit)
+                        {
+                            <option value="@Enums.Enum.ProjectCategory.Edit">تغییرات</option>
+                        }
+
+                        <option value="@Enums.Enum.ProjectCategory.Cabinet_Modern">@Enums.Enum.ProjectCategory.Cabinet_Modern.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Cabinet_Classic">@Enums.Enum.ProjectCategory.Cabinet_Classic.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Cabinet_NeoClassic">@Enums.Enum.ProjectCategory.Cabinet_NeoClassic.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Cabinet_Enzo">@Enums.Enum.ProjectCategory.Cabinet_Enzo.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Cabinet_Other">@Enums.Enum.ProjectCategory.Cabinet_Other.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Decor_Closet">@Enums.Enum.ProjectCategory.Decor_Closet.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Decor_Full">@Enums.Enum.ProjectCategory.Decor_Full.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Decor_Other">@Enums.Enum.ProjectCategory.Decor_Other.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Official">@Enums.Enum.ProjectCategory.Official.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Facade">@Enums.Enum.ProjectCategory.Facade.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.CNC">@Enums.Enum.ProjectCategory.CNC.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.CNC_Inlaid">@Enums.Enum.ProjectCategory.CNC_Inlaid.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.CNC_Industrial">@Enums.Enum.ProjectCategory.CNC_Industrial.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.CNC_Plan">@Enums.Enum.ProjectCategory.CNC_Plan.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.MotionGraphics">@Enums.Enum.ProjectCategory.MotionGraphics.GetDescription()</option>
+                        <option value="@Enums.Enum.ProjectCategory.Logo">@Enums.Enum.ProjectCategory.Logo.GetDescription()</option>
+
+                        <option value="@Enums.Enum.ProjectCategory.Print">پرینت</option>
+                        <option value="@Enums.Enum.ProjectCategory.Other">سایر</option>
+
+                        <option value="@Enums.Enum.ProjectCategory.Cancel">کنسل شده</option>
+                    }
+                </select>
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>نوع</label>
+                <select asp-for="Type">
+                    <option value="">نامشخص</option>
+                    <option value="@Enums.Enum.Quality.Standard">استاندارد</option>
+                    <option value="@Enums.Enum.Quality.VIP">VIP</option>
+                    <option value="@Enums.Enum.Quality.Animation">انیمیشن</option>
+                </select>
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>طراح</label>
+                <select asp-for="DesignerId">
+                    <option value="">نامشخص</option>
+                    @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority).ThenBy(c => c.TodayPrice))
+                    {
+                        <option value="@item.Id">
+                            @item.TodayCount &nbsp;&nbsp;/&nbsp;&nbsp; @item.Name &nbsp;&nbsp;/&nbsp;&nbsp; @item.TodayPrice
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>نحوه دریافت سفارش</label>
+                <select asp-for="OrderType">
+                    <option value="@Enums.Enum.OrderType.Office">حضوری</option>
+                    <option value="@Enums.Enum.OrderType.Online">آنلاین</option>
+                    <option value="@Enums.Enum.OrderType.Whatsapp">واتساپ</option>
+                    <option value="@Enums.Enum.OrderType.Telegram">تلگرام</option>
+                    <option value="@Enums.Enum.OrderType.Soroush">سروش</option>
+                    <option value="@Enums.Enum.OrderType.Eitaa">ایتا</option>
+                    <option value="@Enums.Enum.OrderType.Rubika">روبیکا</option>
+                    <option value="@Enums.Enum.OrderType.App">اپلیکیشن</option>
+                    <option value="@Enums.Enum.OrderType.Other">غیره</option>
+                </select>
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>وضعیت</label>
+                <select asp-for="Status">
+                    <option value="@Enums.Enum.Status.New">جدید</option>
+                    <option value="@Enums.Enum.Status.Complete">تکمیل شده</option>
+                </select>
+            </div>
+            @*<div class="FormDiv col-100-5" id="">
+                    <label>ساعت تحویل</label>
+                    <input asp-for="DeliveryTime" type="number" value="@Model.Delivery?.Hour" min="0" max="23" />
+                </div>*@
+            <div class="FormDiv col-100-5" id="">
+                <label>تاریخ رسید</label>
+                <input asp-for="Receipt" type="text" class="date-picker" id="date-picker-@(new Random().Next())" value="@Model.Receipt?.ToShortDateString()" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-100-5" id="">
+                <label>تاریخ تحویل</label>
+                <input asp-for="Delivery" type="text" class="date-picker" id="date-picker-@(new Random().Next())" value="@Model.Delivery?.ToShortDateString()" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-100-5" id="">
+                <label>هزینه کل (تومان)</label>
+                <input asp-for="TotalPrice" value="@Model.TotalPrice.ToString("N0")" type="text" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-100-5" id="">
+                <label>هزینه پیش بینی شده (تومان)</label>
+                @if (Model.TotalPrice > 0)
+                {
+                    <input asp-for="Approximate" value="@Model.Approximate.ToString("N0")" type="text" autocomplete="off" readonly />
+                }
+                else
+                {
+                    <input asp-for="Approximate" value="@Model.Approximate.ToString("N0")" type="text" autocomplete="off" />
+                }
+            </div>
+            <div class="FormDiv col-100-5">
+                <label>پرینت</label>
+                <input asp-for="Print" hidden />
+                <label for="Print" style="margin-top:0px;" class="active-label">پرینت</label>
+                <label for="Print" style="margin-top:0px;" class="deactive-label">پرینت</label>
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12" style="@(Model.Print ? null : "display: none")">
+                <label>مبلغ پرینت (تومان)</label>
+                <input asp-for="PrintPrice" value="@(Model.Print ? Model.PrintPrice : Setting.Print(DateTime.Today))" type="text" autocomplete="off" />
+            </div>
+            @if (User.IsInRole("Manager") && Model.DesignerId != null)
+            {
+                <div class="FormDiv col-100-5">
+                    <label>درصد طراح</label>
+                    <input name="DesignerPercent" type="number" min="0" max="100" value="@Model.DesignerPercent" />
+                </div>
+            }
+            <div class="FormDiv col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <label>توضیحات</label>
+                <input asp-for="Description" autocomplete="off" />
+            </div>
+
+            <div class="legend"><span>اطلاعات پرداخت</span></div>
+            <div id="payment-box" hidden>
+                <div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>مبلغ (تومان)</label>
+                        <input name="PaymentPrice" class="PaymentPrice" type="text" autocomplete="off" />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>تاریخ</label>
+                        <input name="PaymentDate" type="text" class="datepicker" value="@(DateTime.Today.ToShortDate())" readonly autocomplete="off" />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>توضیحات</label>
+                        <input name="PaymentDescription" autocomplete="off" />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>نوع</label>
+                        <select name="PaymentType" class="project-payment-type">
+                            <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                            <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                            <option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                            <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                            <option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.ToDesigner)">واریز به طراح</option>
+                        </select>
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12 project-payment-designer-id">
+                        <label>طراح</label>
+                        <select name="PaymentDesignerId">
+                            @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+            @foreach (var item in Model.Payment)
+            {
+                bool readOnly = item.CreatedAt.Date != DateTime.Today;
+
+                <div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>مبلغ (تومان)</label>
+                        <input name="PaymentPrice" class="PaymentPrice" type="text" value="@item.Price.ToString("N0")" @(readOnly ? "readonly" : null) autocomplete="off" />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>تاریخ</label>
+                        <input name="PaymentDate" type="text" value="@item.CreatedAt.ToShortDate()" readonly autocomplete="off" />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>توضیحات</label>
+                        <input name="PaymentDescription" value="@item.Description" autocomplete="off" @(readOnly ? "readonly" : null) />
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                        <label>نوع</label>
+                        <select name="PaymentType" asp-for="@item.PaymentType" class="project-payment-type">
+                            <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                            <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                            <option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                            <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                            <option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.ToDesigner)">واریز به طراح</option>
+                        </select>
+                    </div>
+                    <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12 project-payment-designer-id" style="@(item.PaymentType == Enums.Enum.PaymentType.ToDesigner ? "display: block;" : null)">
+                        <label>طراح</label>
+                        <select name="PaymentDesignerId">
+                            @foreach (var designer in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                            {
+                                if (item.DesignerId == designer.Id)
+                                {
+                                    <option selected value="@designer.Id">@designer.Name</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@designer.Id">@designer.Name</option>
+
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div style="clear:both;"></div>
+                </div>
+            }
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12" id="add-payment">
+                <label class="payment-add" style="margin-top: 8px !important;">افزودن مبلغ</label>
+            </div>
+
+            <div class="legend" style="display: none;"><span>وضعیت ارسال</span></div>
+            <div hidden>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="PrintDelivery" hidden id="PrintDelivery@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="PrintDelivery@(Model.Id)"></label>
+                    <label for="PrintDelivery@(Model.Id)">پرینت</label>
+                </div>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="Telegram" hidden id="Telegram@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="Telegram@(Model.Id)"></label>
+                    <label for="Telegram@(Model.Id)">تلگرام</label>
+                </div>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="Whatsapp" hidden id="Whatsapp@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="Whatsapp@(Model.Id)"></label>
+                    <label for="Whatsapp@(Model.Id)">واتساپ</label>
+                </div>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="Flash" hidden id="Flash@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="Flash@(Model.Id)"></label>
+                    <label for="Flash@(Model.Id)">فلش</label>
+                </div>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="Eitaa" hidden id="Eitaa@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="Eitaa@(Model.Id)"></label>
+                    <label for="Eitaa@(Model.Id)">ایتا</label>
+                </div>
+                <div class="DeliverySelect">
+                    <input type="checkbox" asp-for="App" hidden id="App@(Model.Id)" />
+                    <label class="DeliverySelectLabel" for="App@(Model.Id)"></label>
+                    <label for="App@(Model.Id)">اپ</label>
+                </div>
+            </div>
+
+            <div class="legend" style="display: none;"><span>وضعیت تحویل</span></div>
+            <div hidden>
+                <div class="DeliverySelect yellow">
+                    <input type="checkbox" asp-for="Notification" hidden id="Notification" />
+                    <label class="DeliverySelectLabel" for="Notification"></label>
+                    <label for="Notification">اعلان</label>
+                </div>
+                <div class="DeliverySelect yellow">
+                    <input type="checkbox" asp-for="Ready" hidden id="Ready" />
+                    <label class="DeliverySelectLabel" for="Ready"></label>
+                    <label for="Ready">رندر</label>
+                </div>
+                <div class="DeliverySelect yellow">
+                    <input type="checkbox" asp-for="Screenshot" hidden id="Screenshot" />
+                    <label class="DeliverySelectLabel" for="Screenshot"></label>
+                    <label for="Screenshot">اسکرین</label>
+                </div>
+                <div class="DeliverySelect yellow">
+                    <input type="checkbox" asp-for="Follow" hidden id="Follow" />
+                    <label class="DeliverySelectLabel" for="Follow"></label>
+                    <label for="Follow">نیاز به پیگیری</label>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><div class="Hr"></div></div>
+
+            <div style="padding: 0px 10px;">
+
+                @if (Model.Cancel)
+                {
+                    <button id="cancel-@(Model.Id)" type="button" class="btn btn-danger-outline btn-120" style="background: #fff;" onclick="cancelProject('@Model.Id')">غیرفعال</button>
+                }
+                else
+                {
+                    <button id="cancel-@(Model.Id)" type="button" class="btn btn-deactive-outline btn-120" style="background: #fff;" onclick="cancelProject('@Model.Id')">فعال</button>
+                }
+
+                @if (Model.Archive)
+                {
+                    <button id="archive-@(Model.Id)" type="button" class="btn btn-danger-outline btn-120" style="background: #fff; margin-right: 10px; visibility: hidden;" onclick="archiveProject('@Model.Id')">آرشیو شده</button>
+                }
+                else
+                {
+                    <button id="archive-@(Model.Id)" type="button" class="btn btn-deactive-outline btn-120" style="background: #fff; margin-right: 10px; visibility: hidden;" onclick="archiveProject('@Model.Id')">آرشیو کردن</button>
+                }
+
+                <a class="btn btn-back btn-120" style="margin-right: 175px;" onclick="GoBack()">بازگشت</a>
+
+                <button style="display: block; margin-right: 10px;" type="submit" class="btn btn-primary btn-120">ذخیره</button>
+
+                <a style="color: #a1a6bb !important; border-color: #a1a6bb; float: left;" class="btn btn-danger-outline btn-120" onclick="removeProject('@Model.Id')">حذف</a>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<input hidden value="@Model.Mobile" id="firstMobile" />

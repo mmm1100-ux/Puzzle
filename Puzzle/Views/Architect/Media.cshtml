@@ -1,0 +1,24 @@
+﻿@model List<Conversation>
+
+@{
+    ViewData["Title"] = "تصاویر";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="FormBox">
+    <div class="FormBoxTitle" style="padding: 0px;">
+        <label class="btn-project-chat" style="border-right: 0px; color: #3a405b;">پیام</label>
+        <label class="btn-project-media">تصاویر</label>
+    </div>
+    <div id="project-chat-box">
+        <partial name="_ConversationPartial" />
+    </div>
+    <div class="FormBoxInner" id="media-box" style="padding-top:15px;" hidden>
+    </div>
+</div>
+
+<style>
+    .select-all {
+        display: none;
+    }
+</style>

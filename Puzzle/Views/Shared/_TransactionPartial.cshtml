@@ -1,0 +1,137 @@
+﻿@model IEnumerable<Transaction>
+
+@{
+    Layout = null;
+}
+
+<div id="customer-transaction-ajax">
+    <div id="customer-transaction-box">
+        <div class="customer-transaction-title">
+            <span style="display: inline-flex;">
+                پرداخت‌ها
+                <span style="margin-right: 5px; font-size: 12px;">
+                    [@Model.Count() مورد]
+                </span>
+            </span>
+            <a href="/customer/payment/@ViewBag.CustomerId" class="go-to-customer-chat" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-history" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 8l0 4l2 2"></path>
+                    <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path>
+                </svg>
+            </a>
+            <a class="show-add-customer-transaction">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 5l0 14"></path>
+                    <path d="M5 12l14 0"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="add-customer-items">
+            @foreach (var item in Model)
+            {
+                bool readOnly = item.CreatedAt.Date != DateTime.Today;
+                <div class="add-customer-item">
+                    <div class="FormDiv col-lg-2">
+                        <label>تاریخ</label>
+                        <input value="@item.CreatedAt.ToShortDate()" readonly />
+                    </div>
+                    <div class="FormDiv col-lg-2">
+                        <label>مبلغ (تومان)</label>
+                        <input value="@item.Price.ToString("N0")" readonly />
+                    </div>
+
+                    <div class="FormDiv col-lg-3">
+                        <label>نوع</label>
+                        @if (item.PaymentType == Enums.Enum.PaymentType.ToDesigner)
+                        {
+                            <input value="@item.PaymentType.GetDescription() - @item.Designer.Name" readonly />
+                        }
+                        else
+                        {
+                            <input value="@item.PaymentType.GetDescription()" readonly />
+                        }
+                    </div>
+                    <div class="FormDiv col-lg-4">
+                        <label>توضیحات</label>
+                        <input value="@item.Description" readonly />
+                    </div>
+                    @if (item.CreatedAt.Date == DateTime.Today)
+                    {
+                        <div class="FormDiv col-lg-1 customer-transaction-btn-box" onclick="removeTransaction(@item.Id)">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M4 7l16 0"></path>
+                                    <path d="M10 11l0 6"></path>
+                                    <path d="M14 11l0 6"></path>
+                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="FormDiv col-lg-1"></div>
+                    }
+
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="add-customer-transaction">
+        <div class="FormBoxTitle">
+            <label>پرداخت</label>
+        </div>
+        <div class="FormBoxInner">
+            <div class="FormDiv">
+                <label>تاریخ</label>
+                <input name="PaymentDate" type="text" class="datepicker" value="@(DateTime.Today.ToShortDate())" readonly autocomplete="off" />
+            </div>
+            <div class="FormDiv">
+                <label>مبلغ (تومان)</label>
+                <input name="PaymentPrice" class="PaymentPrice" type="text" autocomplete="off" />
+            </div>
+
+            <div class="FormDiv">
+                <label>نوع</label>
+                <select name="PaymentType" class="project-payment-type">
+                    <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                    <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                    <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                    @*<option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>*@
+                    <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                    <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                    @*<option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>*@
+                    <option value="@(Enums.Enum.PaymentType.ToDesigner)">واریز به طراح</option>
+                </select>
+            </div>
+            <div class="FormDiv project-payment-designer-id">
+                <label>طراح</label>
+                <select name="PaymentDesignerId">
+                    @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="FormDiv transaction-modal-description">
+                <label>توضیحات</label>
+                <input type="text" autocomplete="off" />
+            </div>
+            <div class="add-transaction-btn-box">
+                <div>
+                    <button class="btn-add-transaction">ذخیره</button>
+                    <button class="hide-add-transaction">انصراف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

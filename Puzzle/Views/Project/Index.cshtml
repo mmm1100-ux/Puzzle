@@ -1,0 +1,242 @@
+﻿@model ProjectViewModel
+
+@{ ViewData["Title"] = "پروژه‌ها";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+                //string orderType = "ح";
+                int dayOfWeek = 1;
+
+                ViewBag.ShowName = true;
+                ViewData["ShowDesigner"] = true;
+
+                if (ViewBag.ShowCalender == true)
+                {
+                    switch (DateTime.Today.AddDays(-Model.Page + 1).DayOfWeek)
+                    {
+                        case DayOfWeek.Saturday:
+                            dayOfWeek = 0;
+                            break;
+                        case DayOfWeek.Sunday:
+                            dayOfWeek = 1;
+                            break;
+                        case DayOfWeek.Monday:
+                            dayOfWeek = 2;
+                            break;
+                        case DayOfWeek.Tuesday:
+                            dayOfWeek = 3;
+                            break;
+                        case DayOfWeek.Wednesday:
+                            dayOfWeek = 4;
+                            break;
+                        case DayOfWeek.Thursday:
+                            dayOfWeek = 5;
+                            break;
+                        case DayOfWeek.Friday:
+                            dayOfWeek = 6;
+                            break;
+                    }
+                }
+
+                int j = 1;
+                int k = 1;
+
+                if (Model.TotalPage > 0)
+                {
+                    if (Model.TotalPage > 10 && Model.Page > 5)
+                    {
+                        j = Model.Page - 4;
+                    }
+                    if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+                    {
+                        j = Model.TotalPage - 8;
+                    }
+                    k = j + 9;
+                } }
+
+@if (ViewBag.ShowCategory == true)
+{
+<div class="FormBox" style="float: unset;">
+    <div class="Sorting">
+        <ul>
+            <li><span class="SortingTitle">مرتب سازی بر اساس:</span></li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.ModernCabinet ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.ModernCabinet">
+                    <span>کابینت مدرن</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.ClassicCabinet ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.ClassicCabinet">
+                    <span>کابینت کلاسیک</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.Decor ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.Decor">
+                    <span>دکور</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.ModernVray ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.ModernVray">
+                    <span>مدرن وی ری</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.ClassicVray ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.ClassicVray">
+                    <span>کلاسیک وی ری</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.DecorVray ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.DecorVray">
+                    <span>دکور وی ری</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.PlusModernCabinet ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.PlusModernCabinet">
+                    <span>مدرن پلاس</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.PlusClassicCabinet ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.PlusClassicCabinet">
+                    <span>کلاسیک پلاس</span>
+                </a>
+            </li>
+            <li class="@(Model.ProjectCategory == Enums.Enum.ProjectCategory.TwoDimensional ? "SortingActive" : null)">
+                <a href="/decoroham/project?Page=1&category=@Enums.Enum.ProjectCategory.TwoDimensional">
+                    <span>دو بعدی</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>}
+
+<div id="Project">
+    @if (ViewBag.ShowCalender == true)
+    {
+<div class="puzzle-calender">
+    <div class="project-calender-previous">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M9 6l6 6l-6 6" />
+        </svg>
+    </div>
+    <div class="project-calender-day">
+        <ul class="multiple-items">
+            @for (int a = Model.Page + 28 + dayOfWeek; a > Model.Page - 28 - (7 - dayOfWeek); a--)
+            {
+<li class="@(a == Model.Page ? "PageNumberActive" : null)">
+    <a href="/Project?Page=@a">
+        @DateTime.Today.AddDays(-a + 1).GetDayOfWeek()
+        @DateTime.Today.AddDays(-a + 1).ToShamsi().Day
+        @DateTime.Today.AddDays(-a + 1).ToShamsi().MonthName
+    </a>
+</li>}
+        </ul>
+    </div>
+    <div class="project-calender-next">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M15 6l-6 6l6 6" />
+        </svg>
+    </div>
+</div>}
+
+    <div class="card">
+
+        @if (ViewBag.SimpleTitle == false)
+        {
+<div class="FormBoxTitle" style="padding: 0px; margin: 0px -20px;">
+    <label class="btn-date">پروژه‌ها</label>
+    <label class="btn-designer">‌بدون طراح</label>
+    <label class="btn-delivery">تحویل نشده</label>
+</div> }
+            else
+            {
+<div class="FormBoxTitle" style="margin: 0px -20px;">
+    <label>@ViewBag.FormTitle</label>
+</div>}
+
+        <partial name="_ProjectPartial" model="Model.Project" />
+
+    </div>
+</div>
+
+<div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>توضیحات</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <input id="description-id" hidden />
+        <textarea class="popup-textarea"></textarea>
+        <button class="btn-popup-save">ذخیره</button>
+    </div>
+</div>
+
+@if (Model.TotalPage > 0)
+{
+<div class="PageNumber" id="PageNumber" style="float:right;">
+    <div class="Category">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="border-left: 1px solid #f0f2f7; height:80px;">
+            @if (Model.Page == 1)
+            {
+<input type="button" class="BackPageImg" disabled /> }
+                else
+                {
+<a href="/decoroham/project?Page=@(Model.Page-1)&category=@Model.ProjectCategory">
+    <input type="button" class="BackPageImg" />
+</a>                }
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+            <ul class="">
+                @for (; j < k && j <= Model.TotalPage; j++)
+                {
+                    if (j == Model.Page)
+                    {
+<li class="PageDeactive PageNumberActive" id="Page@(j)"><a style="width: 40px;" href="/decoroham/project?Page=@j&category=@Model.ProjectCategory">@j</a></li> }
+                    else
+                    {
+<li class="PageDeactive" id="Page@(j)"><a style="width: 40px;" href="/decoroham/project?Page=@j&category=@Model.ProjectCategory">@j</a></li>}
+                }
+            </ul>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="border-right: 1px solid #f0f2f7; height:80px;">
+            @if (Model.Page == Model.TotalPage)
+            {
+<input type="button" class="NextPageImg" disabled /> }
+                else
+                {
+<a href="/decoroham/project?Page=@(Model.Page+1)&category=@Model.ProjectCategory">
+    <input type="button" class="NextPageImg" />
+</a>                }
+        </div>
+    </div>
+</div>}
+
+@if (ViewBag.ShowQuickAccess == true)
+{
+<div class="date-popup col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>رفتن به تاریخ</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <form asp-action="date" asp-controller="home" method="post">
+            <input id="date-popup-input" name="date" autocomplete="off" />
+            <button type="submit" class="btn-date-popup-save">جستجو</button>
+        </form>
+    </div>
+</div>
+
+                <ul class="kt-sticky-toolbar">
+                    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--warning" data-toggle="kt-tooltip" title="تحویل نشده‌ها" data-placement="left" data-original-title="Documentation">
+                        <a href="/project/open" target="_blank"><i class="fas fa-shipping-fast"></i></a>
+                    </li>
+
+                    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--danger" id="kt_sticky_toolbar_chat_toggler" data-toggle="kt-tooltip" title="بدون طراح‌ها" data-placement="left" data-original-title="Chat Example">
+                        <a href="/project/nodesigner" target="_blank"><i class="fas fa-paint-brush"></i></a>
+                    </li>
+
+                    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--info" id="kt_sticky_toolbar_chat_toggler" data-toggle="kt-tooltip" title="تسویه نشده‌ها" data-placement="left" data-original-title="Chat Example">
+                        <a href="/project/no-settlement" target="_blank"><i class="fa fa-file"></i></a>
+                    </li>
+
+                    <li class="kt-sticky-toolbar__item kt-sticky-toolbar__item--default" id="kt_sticky_toolbar_chat_toggler" data-toggle="kt-tooltip" title="نیاز به پیگیری" data-placement="left" data-original-title="Chat Example">
+                        <a href="/project/follow" target="_blank"><i class="fa fa-bell"></i></a>
+                    </li>
+                </ul>}

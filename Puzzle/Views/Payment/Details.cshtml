@@ -1,0 +1,65 @@
+﻿@model Payment
+
+@{
+    Layout = null;
+}
+
+
+<div class="payment-edit">
+    <div class="payment-edit-header">
+        ویرایش
+    </div>
+    <div class="payment-edit-body">
+        <input type="hidden" class="payment-id" value="@Model.Id" />
+
+        <div>
+            <label>مبلغ (تومان)</label>
+            <input class="payment-price" type="text" value="@Model.Price.ToString("N0")" autocomplete="off" />
+        </div>
+        <div>
+            <label>تاریخ</label>
+            <input class="payment-date" type="text" value="@Model.CreatedAt.ToShamsi().ToShortDateString()" autocomplete="off" />
+        </div>
+        <div>
+            <label>نوع</label>
+            <select asp-for="PaymentType" class="project-payment-type payment-type">
+                <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                <option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>
+                <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                <option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>
+                <option value="@(Enums.Enum.PaymentType.ToDesigner)">واریز به طراح</option>
+            </select>
+        </div>
+        <div class="project-payment-designer-id" style="@(Model.PaymentType == Enums.Enum.PaymentType.ToDesigner ? "display: block;" : null)">
+            <label>طراح</label>
+            <select class="payment-designerId">
+                @foreach (var designer in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                {
+                    if (Model.DesignerId == designer.Id)
+                    {
+                        <option selected value="@designer.Id">@designer.Name</option>
+
+                    }
+                    else
+                    {
+                        <option value="@designer.Id">@designer.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>توضیحات</label>
+            <input asp-for="Description" class="payment-description" autocomplete="off" />
+        </div>
+    </div>
+    <div class="payment-edit-footer">
+        <button class="payment-edit-cancel" onclick="closePaymentEdit()">انصراف</button>
+        <button class="payment-edit-submit" onclick="updatePayment()">ذخیره</button>
+    </div>
+</div>

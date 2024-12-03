@@ -1,0 +1,115 @@
+﻿@model SearchViewModel
+@{
+    ViewData["Title"] = "جستجو";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+    int j = 1;
+    if (Model.Page.TotalPage > 10 && Model.Page.CurrentPage > 5)
+    {
+        j = Model.Page.CurrentPage - 4;
+    }
+    if (Model.Page.TotalPage > 8 && Model.Page.TotalPage - 4 <= Model.Page.CurrentPage)
+    {
+        j = Model.Page.TotalPage - 8;
+    }
+
+    int k = j + 9;
+}
+
+<div class="FormBox mb-30">
+    <div class="FormBoxTitle">
+        <label>جستجو</label>
+    </div>
+    <div class="FormBoxInner">
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12" style="">
+            <label style="margin:0px;">نام خانوادگی و نام</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">شماره تماس</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">شماره شبکه اجتماعی</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">آخرین حضور</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">تعداد کل پروژه</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1 col-md-1 col-sm-12 col-xs-12">
+            <label style="margin:0px;">باقی مانده</label>
+        </div>
+        <div class="col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        </div>
+        @foreach (var item in Model.Customer)
+        {
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="Hr margin-top-15"></div>
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12" style="@(item.Balance < 0 ? "color: #eb4e36;" : (item.Balance > 0 || item.Credit > 0) ? "color: #43d29e;" : null)">
+                <a class="customer-link" href="/customer/details/@item.Id">@item.LastName @item.FirstName</a>
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@item.Mobile" readonly />
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@item.Social" readonly />
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@(item.LastTime!=null?item.LastTime:"-")" readonly />
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@item.TotalProject عدد" readonly />
+            </div>
+            <div class="FormDiv margin-top-15 col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <input style="direction: ltr; text-align: right;" type="text" value="@item.Balance.ToString("N0")" readonly />
+            </div>
+            <div class="col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <a asp-action="Details" class="margin-top-15 btn btn-success" asp-route-Id="@item.Id" style="border-radius:5px;">مشاهده</a>
+            </div>
+            <div class="col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                <a asp-action="AddProject" class="margin-top-15 btn btn-primary" asp-route-Id="@item.Id" style="border-radius:5px;">افزودن</a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="puzzle-pagination d-flex">
+    <div class="pagination-previous">
+        @{
+            string paginationUrl = null;
+            if (Model.Page.CurrentPage != 1)
+            {
+                paginationUrl = "/customer/search?keyword=" + Model.Filter.Keyword + "&page=" + (Model.Page.CurrentPage - 1);
+            } }
+
+        <a href="@paginationUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 6l6 6l-6 6" />
+            </svg>
+        </a>
+    </div>
+    <div class="pagination-number">
+        @for (; j < k && j <= Model.Page.TotalPage; j++)
+        {
+            <label class="@(j == Model.Page.CurrentPage ? "pagination-number-active" : null)">
+                <a href="/customer/search?keyword=@Model.Filter.Keyword&page=@j">@j</a>
+            </label>
+        }
+    </div>
+    <div class="pagination-next">
+        @{ paginationUrl = null;
+            if (Model.Page.CurrentPage != Model.Page.TotalPage)
+            {
+                paginationUrl = "/customer/search?keyword=" + Model.Filter.Keyword + "&page=" + (Model.Page.CurrentPage + 1);
+            } }
+        <a href="@paginationUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M15 6l-6 6l6 6" />
+            </svg>
+        </a>
+    </div>
+</div>
+

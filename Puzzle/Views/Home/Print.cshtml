@@ -1,0 +1,123 @@
+﻿@model ViewModels.PrintViewModel
+
+@{
+    Layout = null;
+    int i = 1;
+    int page = Math.Ceiling(Model.Project.Count / 9.0).ToInt();
+
+    page = page == 0 ? 1 : page;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>فاکتور آقای @Model.Customer.FirstName @Model.Customer.LastName | پازل</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
+</head>
+<body>
+    <input value="فاکتور آقای @Model.Customer.FirstName @Model.Customer.LastName" id="print-name-for-jpg" type="hidden" />
+    @for (int p = 1; p <= page; p++)
+    {
+        <div class="print-background-parent">
+            <div class="print-background" id="print-to-jpg-@(p)">
+                <div class="customer-info">
+                    <div>شماره فاکتور: @((DateTime.Now.Ticks - new DateTime(2021, 01, 01).Ticks) / (60 * 1000 * 10000))</div>
+                    <div>تاریخ: @DateTime.Today.ToShamsi().ToShortDateString()</div>
+                    <div>صفحه: @p از @(page)</div>
+                    <div>مشتری: جناب آقای @Model.Customer.FirstName @Model.Customer.LastName</div>
+                </div>
+                <table>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>عنوان</th>
+                        <th>نوع</th>
+                        <th>تاریخ</th>
+                        <th>مبلغ کل</th>
+                        <th>مبلغ پرداختی</th>
+                        <th>وضعیت</th>
+                        <th>باقی مانده</th>
+                    </tr>
+                    @foreach (var item in Model.Project.Skip((p - 1) * 9).Take(9))
+                    {
+                        <tr>
+                            <th>@(i++)</th>
+                            <th>@item.Title</th>
+                            <th>@item.ProjectCategory.GetDescription()</th>
+                            <th>@item.Receipt.ToShamsi().ToShortDateString()</th>
+                            <th>@((item.TotalPrice * 1000).ToString("N0"))</th>
+                            <th>@((item.TotalPayment * 1000).ToString("N0"))</th>
+                            <th>@(item.TotalPrice > item.TotalPayment ? "بدهکار" : "بستانکار")</th>
+                            <th>@Math.Abs((item.TotalPrice - item.TotalPayment) * 1000).ToString("N0")</th>
+                        </tr>
+                    }
+
+                    @for (; i <= (p * 9); i++)
+                    {
+                        <tr style="height:51px;"></tr>
+                    }
+
+                    <tr style="line-height: 10px; @(p != page ? "opacity: 0" : null)">
+                        <th style="text-align: left; padding-top: 19px;" colspan="7" class="title">مجموع کل:</th>
+                        <th style="font-weight: bold; padding-top: 19px;">@((Model.Project.Sum(c=>c.TotalPrice) * 1000).ToString("N0"))</th>
+                    </tr>
+                    <tr style="@(p != page ? "opacity: 0" : null)">
+                        <th style="text-align: left;" colspan="7" class="title">مجموع پرداختی:</th>
+                        <th style="font-weight: bold;">@((Model.Project.Sum(c=>c.TotalPayment) * 1000).ToString("N0"))</th>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; @(p != page ? "opacity: 0" : null)" colspan="7" class="title">باقی مانده:</th>
+                        @if (p == page)
+                        {
+                            <th style="font-weight: bold;">@(Math.Abs((Model.Project.Sum(c=>c.TotalPrice) - Model.Project.Sum(c => c.TotalPayment)) * 1000).ToString("N0")) تومان</th>
+                        }
+                        else
+                        {
+                            <th style="font-weight: bold;">ادامه در صفحه بعد</th>
+                        }
+                    </tr>
+                </table>
+                <div class="print-co">
+                    <div>
+                        <p>شماره کارت: 2428 7475 8610 6219</p>
+                        <p>به نام: محسن برفه ئی</p>
+                        <p style="font-weight: 700;">لطفا پس از واریز، عکس فیش واریزی را ارسال نمایید.</p>
+                    </div>
+                    <hr style="margin: 18px 0px; border: none; background-color: #ddd; padding: 0.5px 0px; width: 390px;" />
+                    <div>
+                        <p>شعبه یک: شهرک صنعتی چهاردانگه، بلوار 21، ابتدای خیابان پژواک</p>
+                        <p>شعبه دو: شهرک صنعتی چهاردانگه، تقاطع خیابان 21.5 مهرتاش و بلوار صنایع</p>
+                        <p>تلفن تماس: 55261608 021 | 55448362 021 | 55448357 021</p>
+                    </div>
+                    <div class="print-social">
+                        شماره همراه و شبکه های اجتماعی: 09304428331
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <div class="OverHide" id="OverHide"></div>
+    <div class="Loading" id="Loading">
+        <img class="" src="~/images/Loading.gif" />
+        <div class="loading-other">
+            <div class="">
+                <label class="upload-percent">0%</label>
+                <label class="upload-size">0MB</label>
+            </div>
+            <div class="upload-progress">
+                <div class="upload-progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/jquery.js"></script>
+    <script src="~/lib/FileSaver.js-master/dist/FileSaver.js"></script>
+    <script src="~/lib/dom-to-image-master/dist/dom-to-image.min.js"></script>
+    <script src="~/js/print.js" asp-append-version="true"></script>
+</body>
+</html>

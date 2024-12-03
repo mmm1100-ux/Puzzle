@@ -1,0 +1,16 @@
+﻿@model IEnumerable< Puzzle.Models.ProjectAccounting>
+
+@{
+    var project = (ProjectViewModel)ViewBag.Project;
+    var deposit = (List<Deposit>)ViewBag.Deposit;
+}
+
+@foreach (var item in Model)
+{
+    <div>
+    <div>@item.TotalPayment</div>
+    <div>@item.PrintPrice</div>
+    <div>@item.Wage</div>
+    <div>@item.DesignerPercent</div>
+    </div>
+}  

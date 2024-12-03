@@ -1,0 +1,71 @@
+﻿@model Puzzle.ViewModels.WageViewModel
+
+@{
+    ViewData["Title"] = "حق الزحمه";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="padding: 0px 15px; width: 60%; margin: 0px auto;">
+    <div class="FormBox">
+        <div class="FormBoxTitle">
+            <label>حق الزحمه</label>
+        </div>
+        <div class="FormBoxInner">
+            <div style="margin-top: 40px;">
+                <p>
+                    باقی مانده حق الزحمه شما تا این لحظه مبلغ
+                    <label style="font-weight: bold; color: #222328; margin-bottom: 0px; direction: ltr;">@((Model.Wage * 1000).ToString("N0"))</label>
+                    <label style="font-weight: bold; color: #222328; margin-bottom: 0px;">
+                        تومان
+                    </label>
+                    می‌باشد.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="padding: 0px 15px; width: 60%; margin: 0px auto;">
+    <div class="FormBox">
+        <div class="FormBoxTitle">
+            <label>واریزها</label>
+        </div>
+        <div class="FormBoxInner">
+            <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <label style="margin:0px;">تاریخ</label>
+            </div>
+            <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <label style="margin:0px;">مبلغ</label>
+            </div>
+            <div class="margin-top-15 FormDiv col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                <label style="margin:0px;">توضیحات</label>
+            </div>
+            @foreach (var item in Model.Deposit)
+            {
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="Hr margin-top-15"></div>
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <input type="text" value="@item.CreatedAt.ToShamsi().ToShortDateString()" readonly />
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <input type="text" value="@((item.Price * 1000).ToString("N0"))" readonly />
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    @if (item.Description != null && item.Description.StartsWith("ProjectId="))
+                    {
+                        <input type="text" value="واریز توسط @item.Description.Split(";Customer=")[1]" readonly />
+                    }
+                    else if (item.Description != null && item.Description.StartsWith("CustomerId="))
+                    {
+                        <input type="text" value="واریز توسط @item.Description.Split(";Customer=")[1]" readonly />
+                    }
+                    else
+                    {
+                        <input type="text" value="@item.Description" readonly />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+﻿@model DepositViewModel
+
+@{
+    ViewData["Title"] = "واریزها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+    int j = 1;
+    int k = 1;
+
+    if (Model.TotalPage > 10 && Model.Page > 5)
+    {
+        j = Model.Page - 4;
+    }
+    if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+    {
+        j = Model.TotalPage - 8;
+    }
+    k = j + 9;
+}
+
+<div>
+    <div class="FormBox mb-30">
+        <div class="FormBoxTitle">
+            <label>واریزها</label>
+            <a class="new-label" asp-action="create">جدید</a>
+        </div>
+        <div class="FormBoxInner">
+            @foreach (var item in Model.Deposit)
+            {
+                if (i++ != 1)
+                {
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="Hr margin-top-15"></div>
+                    </div>
+                }
+                <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <input type="text" value="@item.Designer.Name" readonly />
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <input type="text" value="@item.Price.ToString("N3")" readonly />
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <input type="text" value="@item.CreatedAt.ToShamsi().ToShortDateString()" readonly />
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    @if (item.Description != null && item.Description.StartsWith("ProjectId="))
+                    {
+                        <input type="text" value="واریز توسط مشتری - @item.Description.Split(";Customer=")[1]" readonly />
+                    }
+                    else if (item.Description != null && item.Description.StartsWith("CustomerId="))
+                    {
+                        <input type="text" value="واریز توسط مشتری - @item.Description.Split(";Customer=")[1]" readonly />
+                    }
+                    else
+                    {
+                        <input type="text" value="@item.Description" readonly />
+                    }
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    @if (item.Description != null && item.Description.StartsWith("ProjectId="))
+                    {
+                        <a href="/edit/@item.Description.Split(";Customer=")[0].Replace("ProjectId=", null)" class="margin-top-15 btn btn-success" style="border-radius:5px;">مشاهده</a>
+                    }
+                    else if (item.Description != null && item.Description.StartsWith("CustomerId="))
+                    {
+                        <a href="/customer/details/@item.Description.Split(";Customer=")[0].Replace("CustomerId=", null)" class="margin-top-15 btn btn-success" style="border-radius:5px;">مشاهده</a>
+                    }
+                    else
+                    {
+                        <a asp-action="edit" class="margin-top-15 btn btn-success" asp-route-Id="@item.Id" style="border-radius:5px;">مشاهده</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="puzzle-pagination d-flex">
+        <div class="pagination-previous">
+            @{ string paginationUrl = null;
+                if (Model.Page != 1)
+                {
+                    paginationUrl = "/deposit?page=" + (Model.Page - 1);
+                } }
+            <a href="@paginationUrl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l6 6l-6 6" />
+                </svg>
+            </a>
+        </div>
+        <div class="pagination-number">
+            @for (; j < k && j <= Model.TotalPage; j++)
+            {
+                if (j == Model.Page)
+                {
+                    <label class="pagination-number-active"><a href="/deposit?page=@j">@j</a></label>
+                }
+                else
+                {
+                    <label><a href="deposit?page=@j">@j</a></label>
+                }
+            }
+        </div>
+        <div class="pagination-next">
+            @{
+                paginationUrl = null;
+                if (Model.Page != Model.TotalPage)
+                {
+                    paginationUrl = "/deposit?page=" + (Model.Page + 1);
+                } }
+            <a href="@paginationUrl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+

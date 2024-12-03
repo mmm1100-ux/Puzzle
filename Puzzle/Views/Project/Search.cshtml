@@ -1,0 +1,159 @@
+﻿@model ProjectViewModel
+
+@{
+    ViewBag.ShowName = true;
+    ViewData["ShowDesigner"] = true;
+
+    if (ViewBag.JustProject == true)
+    {
+        Layout = "";
+    }
+
+    int j = 1;
+    int k = 1;
+
+    if (Model.TotalPage > 0)
+    {
+        if (Model.TotalPage > 10 && Model.Page > 5)
+        {
+            j = Model.Page - 4;
+        }
+        if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+        {
+            j = Model.TotalPage - 8;
+        }
+        k = j + 9;
+    }
+}
+
+@if (ViewBag.JustProject == false)
+{
+<div class="project-search-box">
+    <div>
+        <label>دسته بندی</label>
+        <select class="project-category">
+            <option value="">همه</option>
+            @foreach (var item in (Enums.Enum.ProjectCategory[])System.Enum.GetValues(typeof(Enums.Enum.ProjectCategory)))
+            {
+                <option value="@item">
+                    @item.GetDescription()
+                </option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>نوع</label>
+        <select class="type">
+            <option value="">همه</option>
+            @foreach (var item in (Enums.Enum.Quality[])System.Enum.GetValues(typeof(Enums.Enum.Quality)))
+            {
+                <option value="@item">
+                    @item.GetDescription()
+                </option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>طراح</label>
+        <select class="designer-id">
+            <option value="">همه</option>
+            @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+            {
+                <option value="@item.Id">
+                    @item.Name
+                </option>
+            }
+        </select>
+    </div>
+    <div>
+        <label>عنوان</label>
+        <input class="title" />
+    </div>
+    <div>
+        <label>از تاریخ</label>
+        <input class="date-picker from-date" id="from-date" autocomplete="off" />
+    </div>
+    <div>
+        <label>تا تاریخ</label>
+        <input class="date-picker to-date" id="to-date" autocomplete="off" />
+    </div>
+    <div>
+        <label>از قیمت</label>
+        <input class="from-price" />
+    </div>
+    <div>
+        <label>تا قیمت</label>
+        <input class="to-price" />
+    </div>
+    <button onclick="searchProject()">اعمال</button>
+</div>
+}
+
+<div class="project-list-ajax">
+    <div id="Project">
+        <div class="card">
+            <div class="FormBoxTitle" style="margin: 0px -20px;">
+                <label>پروژه‌ها</label>
+            </div>
+            <partial name="_ProjectPartial" model="Model.Project" />
+        </div>
+    </div>
+
+    <div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+        <div class="FormBoxTitle">
+            <label>توضیحات</label>
+        </div>
+        <div class="FormBoxInner" style="padding: 40px">
+            <input id="description-id" hidden />
+            <textarea class="popup-textarea"></textarea>
+            <button class="btn-popup-save">ذخیره</button>
+        </div>
+    </div>
+
+    @if (Model.TotalPage > 1)
+    {
+        <div class="puzzle-pagination">
+            <div class="pagination-previous">
+                @{ string paginationUrl = null;
+                    if (Model.Page != 1)
+                    {
+                        paginationUrl = "searchProject('" + (Model.Page - 1) + "')";
+                    } }
+                <a onclick="@paginationUrl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                </a>
+            </div>
+            <div class="pagination-number">
+                @for (; j < k && j <= Model.TotalPage; j++)
+                {
+                    if (j == Model.Page)
+                    {
+                        <label class="pagination-number-active" id="Page@(j)">
+                            <a onclick="searchProject('@j')">@j</a>
+                        </label> }
+                    else
+                    {
+                        <label id="Page@(j)">
+                            <a onclick="searchProject('@j')">@j</a>
+                        </label>}
+                }
+            </div>
+            <div class="pagination-next">
+                @{ paginationUrl = null;
+                    if (Model.Page != Model.TotalPage)
+                    {
+                        paginationUrl = "searchProject('" + (Model.Page + 1) + "')";
+                    } }
+                <a onclick="@paginationUrl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M15 6l-6 6l6 6" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<UserViewModel>
+@{
+    ViewData["Title"] = "طراح‌ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
+        <div class="FormBox">
+            <div class="FormBoxTitle">
+                <label>طراح‌ها</label>
+                <a class="new-label" asp-action="create">جدید</a>
+            </div>
+            <div class="FormBoxInner">
+                <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12" style="">
+                    <label style="margin:0px;">نام و نام خانوادگی</label>
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                    <label style="margin:0px;">شماره تماس</label>
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                    <label style="margin:0px;">تاریخ تولد</label>
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                    <select class="search-designer">
+                        <option value="فعال">فعال</option>
+                        <option value="غیرفعال">غیرفعال</option>
+                    </select>
+                </div>
+                <div class="col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                </div>
+                @foreach (var item in Model)
+                {
+                    <div class="li-project" style="display: @(item.IsActive ? "block" : "none")">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="Hr margin-top-15"></div>
+                        </div>
+                        <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12" style="">
+                            <input type="text" value="@item.Name" readonly />
+                        </div>
+                        <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                            <input type="text" value="@item.PhoneNumber" readonly />
+                        </div>
+                        <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                            <input type="text" value="@item.Birthday?.ToShortDateString()" readonly />
+                        </div>
+                        <div class="margin-top-15 FormDiv col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                            <input type="text" class="status" value="@(item.IsActive ? "فعال" : "غیرفعال")" readonly />
+                        </div>
+                        <div class="col-lg-2-4 col-md-2 col-sm-12 col-xs-12">
+                            <a asp-action="edit" class="btn btn-success" asp-route-Id="@item.Id" style="margin-top:15px; border-radius:5px;">مشاهده</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $('.search-designer').change(function () {
+            let li = $('.li-project');
+            for (i = 0; i < li.length; i++) {
+                let input = $(li[i]).find('.status');
+                let text = input.val();
+                if (text.toUpperCase() == $('.search-designer').val().toUpperCase()) {
+                    li[i].style.display = '';
+                } else {
+                    li[i].style.display = 'none';
+                }
+            }
+        });
+    </script>
+}

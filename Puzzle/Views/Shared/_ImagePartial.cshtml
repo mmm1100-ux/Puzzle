@@ -1,0 +1,59 @@
+﻿
+<div id="upload-image-box" style="position: fixed; top: 100px; background: #fff; width: 1170px; border-radius: 5px; padding: 30px; z-index: 1000;">
+    <div style="width: 100%; float: left; text-align: left; margin-bottom: 15px;">
+        <button class="close" type="button" style="float: left;" onclick="closeUpload()">
+            <span>×</span>
+        </button>
+    </div>
+    <div>
+        <div class="custom-options-checkable">
+            <div class="col-md-4 mb-md-0 mb-2 col-sm-4 col-xs-4" style="max-width: 170px; padding-right: 0px;">
+                <input class="custom-option-item-check" id="homeAddressRadio" type="radio" name="newAddress" value="0" checked="">
+                <label for="homeAddressRadio" class="custom-option-item px-2 py-1">
+                    <span class="d-flex align-items-center">
+                        <span class="custom-option-item-title fw-bolder mb-0">اسکرین شات</span>
+                    </span>
+                </label>
+            </div>
+            <div class="col-md-4 mb-md-0 mb-2 col-sm-4 col-xs-4" style="max-width: 170px;">
+                <input class="custom-option-item-check" id="officeAddressRadio" type="radio" name="newAddress" value="1">
+                <label for="officeAddressRadio" class="custom-option-item px-2 py-1">
+                    <span class="d-flex align-items-center">
+                        <span class="custom-option-item-title fw-bolder mb-0">رندر</span>
+                    </span>
+                </label>
+            </div>
+            <div class="col-md-4 mb-md-0 mb-2 col-sm-4 col-xs-4" style="max-width: 170px;">
+                <input class="custom-option-item-check" id="otherAddressRadio" type="radio" name="newAddress" value="2">
+                <label for="otherAddressRadio" class="custom-option-item px-2 py-1">
+                    <span class="d-flex align-items-center">
+                        <span class="custom-option-item-title fw-bolder mb-0">سایر</span>
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="FormDiv" style="float: right; width: 100%; margin-top: 20px; margin-bottom: -10px;">
+            <label>توضیحات</label>
+            <input id="add-media-description" autocomplete="off" />
+        </div>
+
+        <div class="legend" style="margin-bottom: 20px; margin-right: 0px;"><span>انتخاب تصویر</span></div>
+
+        <div id="add-media" style="float: right;">
+
+            <div style="width: 142px; height: 106px; float: right; margin-left: 20px; margin-top: 20px;" class="file-box">
+                <img id="preview-0" src="/images/noimage.jpg" style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;" />
+                <input id="input-0" onchange="inputChange(event)" type="file" multiple name="media" style="visibility: hidden; display: none;" accept="image/*" />
+            </div>
+
+            <span id="befor-in" hidden></span>
+
+            <div style="width: 142px; float: right; margin-top: 20px;" id="media-default">
+                <label class="btn btn-secondary-outline" onclick="imgClick2()" style="margin-top: 0px" for="media">انتخاب</label>
+                <button onclick="uploadImage()" class="btn btn-primary" style="border-radius: 5px; margin-top: 20px;">ارسال</button>
+            </div>
+
+        </div>
+    </div>
+</div>

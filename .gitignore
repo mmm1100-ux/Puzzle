@@ -1,0 +1,13 @@
+
+Puzzle/obj/
+
+Puzzle/bin/
+
+Puzzle/wwwroot/project
+Puzzle/Properties/PublishProfiles/FolderProfile.pubxml
+
+Puzzle/Properties/PublishProfiles/FolderProfile.pubxml.user
+
+Puzzle/Properties/PublishProfiles/FolderProfile1.pubxml.user
+
+.vs/

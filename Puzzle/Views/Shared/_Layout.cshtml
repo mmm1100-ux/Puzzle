@@ -1,0 +1,352 @@
+﻿@{
+    using var db = new Puzzle.Data.PuzzleDbContext();
+
+    var project = db.Project
+        .Where(x => x.IsDelete == false)
+        .Where(x => x.ProjectId == null || x.Parent.IsDelete == false)
+        .Where(x => x.Cancel == false)
+        .Where(x => x.ProjectCategory != Enums.Enum.ProjectCategory.Cancel)
+        .Where(x => x.Receipt >= new DateTime(2020, 9, 18))
+        .Where(x => x.DesignerId == User.GetUserId())
+        .Where(x => x.Delivery.Value.Date <= DateTime.Today)
+        .Where(c => !c.Ready && !c.PrintDelivery && !c.Whatsapp && !c.Telegram && !c.Other && !c.Soroush && !c.Eitaa && !c.Rubika && !c.Flash && !c.App)
+        .Where(x => x.ProjectReport.Where(x => x.UserId == User.GetUserId()).Where(a => a.CreatedAt.Date == DateTime.Today).Any() == false)
+        .Include(x => x.Customer)
+        .Include(x => x.Conversation)
+        .ToList()
+        .OrderBy(x => x.Id)
+        .ToList();
+
+    if (DateTime.Now > DateTime.Today.AddHours(16))
+    {
+        var time14 = DateTime.Today.AddHours(16);
+        var time16 = DateTime.Today.AddHours(16);
+
+        var p = db.ProjectReport
+        .Where(x => x.UserId == User.GetUserId())
+        .Where(x => x.CreatedAt.Date == DateTime.Today)
+        .Where(x => x.CreatedAt <= time14)
+        // .Where(x => x.Reason <= DateTime.Today.AddHours(14))
+
+
+        .Where(x => x.Project.IsDelete == false)
+        .Where(x => x.Project.ProjectId == null || x.Project.Parent.IsDelete == false)
+        .Where(x => x.Project.Cancel == false)
+        .Where(x => x.Project.ProjectCategory != Enums.Enum.ProjectCategory.Cancel)
+        .Where(x => x.Project.DesignerId == User.GetUserId())
+        .Where(x => x.Project.Delivery.Value.Date <= DateTime.Today)
+        .Where(c => !c.Project.Ready && !c.Project.PrintDelivery && !c.Project.Whatsapp && !c.Project.Telegram && !c.Project.Other && !c.Project.Soroush && !c.Project.Eitaa && !c.Project.Rubika && !c.Project.Flash && !c.Project.App)
+        .Where(x => x.Project.ProjectReport.Where(x => x.UserId == User.GetUserId()).Where(a => a.CreatedAt > time16).Any() == false)
+        .Include(x => x.Project).ThenInclude(x => x.Customer)
+        .Include(x => x.Project).ThenInclude(x => x.Conversation)
+        .ToList()
+        .Select(x => x.Project)
+        .OrderBy(x => x.Id)
+        .ToList();
+
+        // project.AddRange(p);
+    }
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>@ViewData["Title"] | پازل</title>
+
+    <link href="~/lib/fontawesome-free-5.15.2-web/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link href="~/css/slick.css" rel="stylesheet" />
+    <link href="~/lib/lightGallery/css/lightgallery-bundle.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/lib/Datepicker/style/kamadatepicker.css" rel="stylesheet" />
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/Datepicker/src/kamadatepicker.js"></script>
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/lib/Chart Js/Chart.bundle.min.js"></script>
+    <script src="~/js/pagination.min.js"></script>
+    <script src="~/lib/lightGallery/lightgallery.min.js"></script>
+    <script src="~/lib/lightGallery/plugins/thumbnail/lg-thumbnail.min.js"></script>
+    <script src="~/lib/lightGallery/plugins/zoom/lg-zoom.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/recorederjs/WebAudioRecorder.min.js"></script>
+    <script src="~/lib/compressorjs-main/dist/compressor.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <div class="TopMenu">
+        <div class="TopMenu1 container">
+            @Html.Partial("_LoginPartial")
+            @if (!User.IsInRole("Designer"))
+            {
+                <div class="SearchBox col-lg-4 col-md-6 col-sm-6">
+                    <form action="/customer">
+                        <input name="keyword" type="text" class="SearchBoxinput col-lg-12 col-md-12 col-sm-12 col-xs-12" autocomplete="off" placeholder="عبارت جستجو خود را وارد کنید..." />
+                        <input name="orderby" value="LastVisitTime" hidden />
+                        <input name="asc" value="True" hidden />
+                        <input type="submit" class="SearchBtn" value="" />
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="SearchBox col-lg-4 col-md-6 col-sm-6">
+                    <form action="/architect/search">
+                        <input name="keyword" type="text" class="SearchBoxinput col-lg-12 col-md-12 col-sm-12 col-xs-12" autocomplete="off" placeholder="عبارت جستجو خود را وارد کنید..." />
+                        <input type="submit" class="SearchBtn" value="" />
+                    </form>
+                </div>
+            }
+            <div class="HeaderLogo">
+                <a href="/">
+                    <img src="~/images/Logo.png" />
+                </a>
+            </div>
+        </div>
+        <div class="MainHeader">
+            <ul class="TopMenuUl container">
+                @if (User.IsInRole("Designer"))
+                {
+                    var unreadCount = mediaRepository.UnreadByDesigner(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+
+                    <li>
+                        <a class="TopLink @(unreadCount > 0 ? "new-media" : null)" href="/architect/timeline">
+                            تایم‌لاین
+                            @if (unreadCount > 0)
+                            {
+                                <span class="media-badge">
+                                    @unreadCount
+                                </span>
+                            }
+                        </a>
+                    </li>
+                    <li><a class="TopLink" href="/architect/project">پروژه‌ها</a></li>
+                    <li><a class="TopLink" href="/architect/project/open">تحویل نشده‌ها</a></li>
+                    <li><a class="TopLink" href="/architect/project/no-settlement">تسویه نشده‌ها</a></li>
+                    <li><a class="TopLink" href="/architect/wage">کارکرد</a></li>
+                    <li><a class="TopLink" href="/architect/favorite">علاقه‌مندی‌ها</a></li>
+                }
+                else
+                {
+                @inject Puzzle.Repository.MediaRepository mediaRepository
+
+                    <li><a class="TopLink" href="/">جدید</a></li>
+
+                    var unreadCount = mediaRepository.Unread();
+                    var unreadCustomerCount = mediaRepository.UnreadCustomerChat();
+                    var unreadProjectReport = mediaRepository.UnreadProjectReport();
+
+                    <li>
+                        <a class="TopLink @(unreadCount > 0 ? "new-media" : null)" href="/conversationlist">
+                            تایم‌لاین
+                            @if (unreadCount > 0)
+                            {
+                                <span class="media-badge">
+                                    @unreadCount
+                                </span>
+                            }
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="TopLink" href="/project">
+                            پروژه‌ها
+                        </a>
+                    </li>
+                    <li>
+                        <a class="TopLink" href="/customer">
+                            مشتری‌ها
+                            @if (unreadCustomerCount > 0)
+                            {
+                                <span class="media-badge">
+                                    @unreadCustomerCount
+                                </span>
+                            }
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <li><a class="TopLink" href="/designer">طراح‌ها</a></li>
+                        <li><a class="TopLink" href="/deposit">واریزها</a></li>
+                        <li><a class="TopLink" href="/user">کاربران</a></li>
+                        @*<li class="hidden-sm hidden-xs"><a class="TopLink" href="/decoroham/project">دکورهام</a></li>*@
+
+                    }
+                    <li>
+                        <a class="TopLink" href="/report">
+                            گزارش روزانه
+                            @if (unreadProjectReport > 0)
+                            {
+                                <span class="media-badge project-report-badge">
+                                    @unreadProjectReport
+                                </span>
+                            }
+                        </a>
+                    </li>
+                    <li><a class="TopLink" href="/favorite">علاقه‌مندی‌ها</a></li>
+                    <li><a class="TopLink" href="/project/search">جستجو</a></li>
+                    <li><a class="TopLink" href="/payment">صندوق</a></li>
+                    @*<li class="hidden-sm hidden-xs"><a class="TopLink" href="/survey">نظرسنجی</a></li>*@
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="OverHide" id="OverHide" style="@(project.Any() ? "display: block;" : null)"></div>
+
+    @if (project.Any())
+    {
+        <div class="project-report-popup">
+            @foreach (var item in project)
+            {
+                <div class="project-report-modal" style="@((project.IndexOf(item) != 0) ? "display: none;" : null)" data-id="@item.Id">
+                    <div class="project-report-header">
+                        <div class="project-report-back">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M9 6l6 6l-6 6"></path>
+                            </svg>
+                        </div>
+                        <div class="project-report-number">پروژه 1 از @project.Count مورد</div>
+                        <div class="project-report-next">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M15 6l-6 6l6 6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="project-report-info">
+                        <div>
+                            <span>عنوان</span>
+                            <span>@item.Title</span>
+                        </div>
+                        <div>
+                            <span>نام خانوادگی و نام</span>
+                            <span>@item.Customer.LastName @item.Customer.FirstName</span>
+                        </div>
+                        <div>
+                            <span>تاریخ سفارش</span>
+                            <span>@item.Receipt.ToShamsi().ToShortDateString()</span>
+                        </div>
+                        <div>
+                            <span>تاریخ تحویل</span>
+                            <span>@item.Delivery.Value.ToShamsi().ToShortDateString()</span>
+                        </div>
+                        <div style="margin-top: 10px; width: 20%;">
+                            <span>دسته بندی</span>
+                            <span>@item.ProjectCategory.GetDescription()</span>
+                        </div>
+                        <div style="margin-top: 10px; width: 20%;">
+                            <span>مبلغ کل</span>
+                            <span>@item.TotalPrice.ToString("N0")</span>
+                        </div>
+                        <div style="margin-top: 10px; width: 20%;">
+                            <span>مبلغ دریافتی</span>
+                            <span>@item.TotalPayment.ToString("N0")</span>
+                        </div>
+                        <div style="margin-top: 10px; width: 20%;">
+                            <span>آنلاین</span>
+                            <span>@item.Customer.LastActivity?.LastActivityToString()</span>
+                        </div>
+                        <div style="width: 20%;">
+                            <div class="projet-report-chat" onclick="getChat('@item.Id', '@item.Title')">
+                                <span>@(item.Conversation.Where(x => x.IsDelete == false).Where(x => x.UnreadByDesigner).Count())</span>
+                                <span>پیام‌ها</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-gap"></div>
+                    <div class="project-report-form">
+                        <div class="project-report-options">
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="1" />
+                                <span>تا ظهر آماده می شود</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="2" />
+                                <span>تا غروب آماده می شود</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="3" />
+                                <span>منتظر تایید اسکرین شات هستم</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="4" />
+                                <span>مشتری پاسخگو نیست</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="5" />
+                                <span>بیعانه یا مبلغ پروژه واریز نشده است</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="6" />
+                                <span>اطلاعات پروژه ناقص می باشد</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="7" />
+                                <span>تاریخ تحویل اشتباه ثبت شده است</span>
+                            </label>
+                            <label>
+                                <input name="project-report-option" class="form-check-input" type="radio" value="8" />
+                                <span>سایر</span>
+                            </label>
+                        </div>
+                        <div>
+                            <textarea placeholder="توضیحات ..."></textarea>
+                        </div>
+                        <div>
+                            <button>ثبت</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="Loading" id="Loading">
+        <img class="" src="~/images/Loading.gif" />
+        <div class="loading-other">
+            <div class="">
+                <label class="upload-percent">0%</label>
+                <label class="upload-size">0MB</label>
+            </div>
+            <div class="upload-progress">
+                <div class="upload-progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    <div id="AlertMessage" onclick="RemoveAlertMessage()" class="col-lg-3 col-xs-12"></div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+    {
+        <input id="is-admin" value="true" hidden />
+    }
+
+    @RenderSection("Scripts", required: false)
+
+    <div class="mini-chat">
+        <div class="mini-chat-header">
+        </div>
+        <span class="mini-chat-close">×</span>
+        <div class="mini-chat-body">
+        </div>
+    </div>
+
+    <script src="~/js/panel.js" asp-append-version="true"></script>
+
+    @if (User.IsInRole("Designer"))
+    {
+        <script src="~/js/designer.js" asp-append-version="true"></script>
+    }
+    else
+    {
+        <script src="~/js/admin.js" asp-append-version="true"></script>
+    }
+</body>
+</html>

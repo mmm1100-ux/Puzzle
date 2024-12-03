@@ -1,0 +1,115 @@
+﻿@model ProjectViewModel
+
+@{ Layout = null;
+
+    int j = 1;
+    if (Model.TotalPage > 10 && Model.Page > 5)
+    {
+        j = Model.Page - 4;
+    }
+    if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+    {
+        j = Model.TotalPage - 8;
+    }
+    int k = j + 9;
+
+    ViewData["ShowName"] = false;
+    ViewData["ShowReceipt"] = true;
+    ViewData["ShowDesigner"] = true; }
+
+<div id="Project">
+    <div class="card">
+        <div class="FormBoxTitle" style="margin: 0px -20px;">
+            <label>پروژه‌ها</label>
+        </div>
+        <div class="project-tab" style="border-bottom: 1px solid #f0f2f7; margin: 0px -20px">
+            <label class="btn-date" style="@(Model.Status == 0 ? "color: #3a405b" : "color: #a1a6bb")">همه</label>
+            <label class="btn-designer" style="@(Model.Status == 2 ? "color: #3a405b" : "color: #a1a6bb")">تسویه نشده</label>
+            <label class="btn-delivery" style="@(Model.Status == 1 ? "color: #3a405b" : "color: #a1a6bb")">تحویل نشده</label>
+        </div>
+        <partial name="_ProjectPartial" model="Model.Project" />
+    </div>
+    @if (Model.TotalPage > 1)
+    {
+<div class="puzzle-pagination">
+    <div class="pagination-previous">
+        @{ string paginationUrl = null;
+                            if (Model.Page != 1)
+                            {
+                                paginationUrl = "getProject('" + (Model.Page - 1) + "')";
+                            } }
+        <a onclick="@paginationUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 6l6 6l-6 6" />
+            </svg>
+        </a>
+    </div>
+    <div class="pagination-number">
+        @for (; j < k && j <= Model.TotalPage; j++)
+        {
+            if (j == Model.Page)
+            {
+<label class="pagination-number-active" id="Page@(j)">
+    <a onclick="getProject('@j')">@j</a>
+</label> }
+else
+{
+<label id="Page@(j)">
+    <a onclick="getProject('@j')">@j</a>
+</label>}
+}
+    </div>
+    <div class="pagination-next">
+        @{ paginationUrl = null;
+                            if (Model.Page != Model.TotalPage)
+                            {
+                                paginationUrl = "getProject('" + (Model.Page + 1) + "')";
+                            } }
+        <a onclick="@paginationUrl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M15 6l-6 6l6 6" />
+            </svg>
+        </a>
+    </div>
+</div>}
+
+</div>
+
+<div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>توضیحات</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <input id="description-id" hidden />
+        <textarea class="popup-textarea"></textarea>
+        <button class="btn-popup-save">ذخیره</button>
+    </div>
+</div>
+
+<script>
+
+    var projectStatus = '@Model.Status'
+
+    $('.btn-date').click(function () {
+        $('.btn-delivery, .btn-designer').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = null
+        getProject(1)
+    });
+
+    $('.btn-delivery').click(function () {
+        $('.btn-designer, .btn-date').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = 1
+        getProject(1)
+    });
+
+    $('.btn-designer').click(function () {
+        $('.btn-delivery, .btn-date').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = 2
+        getProject(1)
+    });
+</script>

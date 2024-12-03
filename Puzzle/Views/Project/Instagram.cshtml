@@ -1,0 +1,63 @@
+﻿@model List<Media>
+
+<div id="lightGallery">
+    @*     <div class="FormBox">
+    <div class="FormBoxTitle">
+    <label>سفید زرد</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 20px 30px 30px;">
+    @foreach (var item in Model)
+    {
+    <div href="/instagram/dark/@(item.Url)" class="lightgallery-selector" style="width: 20%; padding: 10px; float: right;">
+    <img style="width: 100%;" src="/instagram/dark/@(item.Url)" />
+    </div>}
+    </div>
+    </div>
+
+    <div class="FormBox">
+    <div class="FormBoxTitle">
+    <label>مشکی زرد</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 20px 30px 30px;">
+    @foreach (var item in Model)
+    {
+    <div href="/instagram/light/@(item.Url)" class="lightgallery-selector" style="width: 20%; padding: 10px; float: right;">
+    <img style="width: 100%;" src="/instagram/light/@(item.Url)" />
+    </div>}
+    </div>
+    </div> *@
+
+    @*     <div class="FormBox">
+    <div class="FormBoxTitle">
+    <label>کپی رایت</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 20px 30px 30px;">
+    @foreach (var item in Model)
+    {
+    <div href="/instagram/copyright/@(item.Url)" class="lightgallery-selector" style="width: 20%; padding: 10px; float: right;">
+    <img style="width: 100%;" src="/instagram/copyright/@(item.Url)" />
+    </div>}
+    </div>
+    </div> *@
+
+    <div class="FormBox">
+        <div class="FormBoxTitle">
+            <label>تصاویر</label>
+        </div>
+        <div class="FormBoxInner" style="padding: 20px 30px 30px;">
+            @foreach (var item in Model)
+            {
+                <div href="@item.Url.Bitmap(1680, 90)" class="lightgallery-selector" style="width: 20%; padding: 10px; float: right;">
+                    <img style="width: 100%;" src="@item.Url.Bitmap(1680, 90)" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    lightGallery(document.getElementById('lightGallery'), {
+        selector: '.lightgallery-selector',
+        thumbnail: true,
+    });
+</script>

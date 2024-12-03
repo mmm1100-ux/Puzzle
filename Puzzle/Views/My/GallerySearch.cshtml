@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ConversationFavorite>
+
+@{
+    Layout = "_AppLayout.cshtml";
+
+    var count = 99;
+}
+
+<div class="app-gallery-search">
+    <div class="app-gallery-search-container">
+        <div class="app-gallery-search-title">@ViewBag.Title</div>
+
+@*         @if (ViewBag.Title == "کابینت")
+        {
+            <div class="app-gallery-search-filter">
+                <div class="active">همه</div>
+                <div>کابینت مدرن</div>
+                <div>کابینت کلاسیک</div>
+                <div>کابینت نئوکلاسیک</div>
+                <div>کابینت انزو</div>
+            </div>
+        } *@
+
+        <div class="app-gallery-search-filter">
+            <div class="active">همه</div>
+            <div data-quality="Standard">استاندارد</div>
+            <div data-quality="VIP">وی آی پی</div>
+        </div>
+
+        @foreach (var item in Model.GroupBy(x => x.Conversation.Project))
+        {
+            <div class="app-gallery-search-project" onclick="clickLightGallery('@item.Key.Id')" data-quality="@item.Key.Type">
+                <div class="app-gallery-search-project-cover">
+                    <img src="/watermark/240/@(item.First().Conversation.Attachment.Encrypt().Replace("+","plus") + "." + item.First().Conversation.Attachment.Split(".").Last())" loading="lazy" />
+                </div>
+
+                <div class="app-gallery-search-project-description">
+                    <span>طرح شماره @(count--)</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 12l14 0" />
+                        <path d="M5 12l6 6" />
+                        <path d="M5 12l6 -6" />
+                    </svg>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-heart" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                </svg>
+             @*    <div class="app-gallery-search-project-designer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-edit" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
+                        <path d="M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39z" />
+                    </svg>
+                    <span>@item.Key.Designer.Name</span>
+                </div> *@
+
+                <div class="app-gallery-search-project-quality @(item.Key.Type == Enums.Enum.Quality.VIP ? "is-vip" : null)">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-star" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
+                    </svg>
+            <span>@(item.Key.Type)</span>
+            </div> 
+
+                <div class="project-details-lightgallery" id="project-details-lightgallery-@item.Key.Id" style="display: none;">
+                    @foreach (var fc in item)
+                    {
+                        <div class="app-gallery-search-project-slide">
+                            <a href="/watermark/1680/@(fc.Conversation.Attachment.Encrypt().Replace("+","plus") + "." + fc.Conversation.Attachment.Split(".").Last())" class="lightgallery-selector">
+                                <img class="" src="" style="width: 100%" />
+                            </a>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

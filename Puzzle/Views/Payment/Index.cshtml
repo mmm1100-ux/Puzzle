@@ -1,0 +1,512 @@
+﻿@model SearchPaymentViewModel
+@{
+    ViewData["Title"] = "صندوق";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int count = Model.Payment.Count();
+
+    int dayOfWeek = 1;
+
+    switch (DateTime.Today.AddDays(-Model.Page.CurrentPage + 1).DayOfWeek)
+    {
+        case DayOfWeek.Saturday:
+            dayOfWeek = 0;
+            break;
+        case DayOfWeek.Sunday:
+            dayOfWeek = 1;
+            break;
+        case DayOfWeek.Monday:
+            dayOfWeek = 2;
+            break;
+        case DayOfWeek.Tuesday:
+            dayOfWeek = 3;
+            break;
+        case DayOfWeek.Wednesday:
+            dayOfWeek = 4;
+            break;
+        case DayOfWeek.Thursday:
+            dayOfWeek = 5;
+            break;
+        case DayOfWeek.Friday:
+            dayOfWeek = 6;
+            break;
+    }
+}
+
+<div class="puzzle-calender">
+    <div class="project-calender-previous">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M9 6l6 6l-6 6" />
+        </svg>
+    </div>
+    <div class="project-calender-day">
+        <ul class="multiple-items">
+            @for (int a = Model.Page.CurrentPage + 28 + dayOfWeek; a > Model.Page.CurrentPage - 28 - (7 - dayOfWeek); a--)
+            {
+                <li class="@(a == Model.Page.CurrentPage ? "PageNumberActive" : null)">
+                    <a href="/payment?page=@a">
+                        @DateTime.Today.AddDays(-a + 1).GetDayOfWeek()
+                        @DateTime.Today.AddDays(-a + 1).ToShamsi().Day
+                        @DateTime.Today.AddDays(-a + 1).ToShamsi().MonthName
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="project-calender-next">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M15 6l-6 6l6 6" />
+        </svg>
+    </div>
+</div>
+
+<div class="FormBox">
+    <div class="FormBoxTitle">
+        <label>مجموع</label>
+    </div>
+    <div class="FormBoxInner">
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">نقدی امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.Cash).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز سامان امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.SamanCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز ملت امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.MellatCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به سامان امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToSaman).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به ملت امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToMellat).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به پاسارگاد امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToPasargad).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به طراح امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.ToDesigner).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">اصلاح سند امروز</label>
+            <input value="@Model.Payment.Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.NewFound).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">مجموع امروز</label>
+            <input value="@((Model.Payment.Where(x => x.PaymentType != Enums.Enum.PaymentType.ToCredit && x.PaymentType != Enums.Enum.PaymentType.FromCredit&& x.PaymentType != Enums.Enum.PaymentType.Return).Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1)).Sum(c => c.Price)-Model.Payment.Where(x => x.PaymentType == Enums.Enum.PaymentType.Return).Where(c => c.Receipt == DateTime.Today.AddDays(-Model.Page.CurrentPage + 1)).Sum(c => c.Price)).ToString("N0"))" readonly />
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="Hr margin-top-15"></div>
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">نقدی گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.Cash).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز سامان گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.SamanCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز ملت گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.MellatCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به سامان گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToSaman).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به ملت گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToMellat).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به پاسارگاد گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.DepositToPasargad).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به طراح گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.ToDesigner).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">اصلاح سند گذشته</label>
+            <input value="@Model.Payment.Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1) && c.PaymentType == Enums.Enum.PaymentType.NewFound).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">مجموع گذشته</label>
+            <input value="@((Model.Payment.Where(x => x.PaymentType != Enums.Enum.PaymentType.ToCredit && x.PaymentType != Enums.Enum.PaymentType.FromCredit&& x.PaymentType != Enums.Enum.PaymentType.Return).Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1)).Sum(c => c.Price)-Model.Payment.Where(x => x.PaymentType == Enums.Enum.PaymentType.Return).Where(c => c.Receipt != DateTime.Today.AddDays(-Model.Page.CurrentPage + 1)).Sum(c => c.Price)).ToString("N0"))" readonly />
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="Hr margin-top-15"></div>
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">نقدی کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.Cash).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز سامان کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.SamanCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">پوز ملت کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.MellatCart).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به سامان کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.DepositToSaman).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به ملت کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.DepositToMellat).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به پاسارگاد کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.DepositToPasargad).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">واریز به طراح کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.ToDesigner).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">اصلاح سند کل</label>
+            <input value="@Model.Payment.Where(c => c.PaymentType == Enums.Enum.PaymentType.NewFound).Sum(c => c.Price).ToString("N0")" readonly />
+        </div>
+        <div class="margin-top-15 FormDiv col-100-9">
+            <label style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">مجموع کل</label>
+            <input value="@((Model.Payment.Where(x => x.PaymentType != Enums.Enum.PaymentType.ToCredit && x.PaymentType != Enums.Enum.PaymentType.FromCredit&& x.PaymentType != Enums.Enum.PaymentType.Return).Sum(c => c.Price) - Model.Payment.Where(x => x.PaymentType == Enums.Enum.PaymentType.Return).Sum(c => c.Price)).ToString("N0"))" readonly />
+        </div>
+    </div>
+</div>
+
+
+@* <div id="Project">
+    <table>
+        <thead></thead>
+        <tbody>
+            <tr>
+                <th></th>
+                <th>نقدی</th>
+                <th>پوز سامان</th>
+                <th>پوز ملت</th>
+                <th>واریز به سامان</th>
+                <th>واریز به ملت</th>
+                <th>واریز به پاسارگاد</th>
+                <th>واریز به طراح</th>
+                <th>اصلاح سند</th>
+                <th>مجموع</th>
+            </tr>
+            <tr>
+                <td>امروز</td>
+                <td>نقدی</td>
+                <td>پوز سامان</td>
+                <td>پوز ملت</td>
+                <td>واریز به سامان</td>
+                <td>واریز به ملت</td>
+                <th>واریز به پاسارگاد</th>
+                <td>واریز به طراح</td>
+                <td>اصلاح سند</td>
+                <td>مجموع</td>
+            </tr>
+            <tr>
+                <td>گذشته</td>
+                <td>نقدی</td>
+                <td>پوز سامان</td>
+                <td>پوز ملت</td>
+                <td>واریز به سامان</td>
+                <td>واریز به ملت</td>
+                <td>واریز به پاسارگاد</td>
+                <td>واریز به طراح</td>
+                <td>اصلاح سند</td>
+                <td>مجموع</td>
+            </tr>
+            <tr>
+                <td>کل</td>
+                <td>نقدی</td>
+                <td>پوز سامان</td>
+                <td>پوز ملت</td>
+                <td>واریز به سامان</td>
+                <td>واریز به ملت</td>
+                <td>واریز به پاسارگاد</td>
+                <td>واریز به طراح</td>
+                <td>اصلاح سند</td>
+                <td>مجموع</td>
+            </tr>
+       </tbody>
+    </table>
+</div> *@
+
+
+<div class="FormBox" id="Project">
+    <div class="FormBoxTitle">
+        <label>صندوق</label>
+    </div>
+
+
+    <div class="FormBoxInner">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>نام خانوادگی و نام</th>
+                    <th>نوع پرداخت</th>
+                    <th>
+                        <select class="search-payment-designer">
+                            <option value="">طراح</option>
+                            @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                            {
+                                <option value="@string.Join(" ", item.Name.Split(" ").Skip(1))">
+                                    @item.Name
+                                </option>
+                            }
+                        </select>
+                    </th>
+                    <th>
+                        <select class="search-payment-type">
+                            <option value="">نحوه پرداخت</option>
+                            <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                            <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                            <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                            <option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                            <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                            <option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>
+                            <option value="@(Enums.Enum.PaymentType.ToDesigner)">واریز به طراح</option>
+                        </select>
+                    </th>
+                    <th>توضیحات</th>
+                    <th>مبلغ</th>
+                    <th style="width: @(User.IsInRole("Manager") ? "70px" : "41px");"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Payment)
+                {
+                    <tr>
+                        <td>@(count--)</td>
+                        <td>
+                            <div>
+                                <a class="customer-tag" style="@(item.Customer.Balance < 0 ? "color: #eb4e36;" : (item.Customer.Balance > 0 || item.Customer.Credit > 0) ? "color: #43d29e;" : null)" href="/customer/details/@item.Customer.Id">
+                                    @item.Customer.LastName @item.Customer.FirstName
+                                </a>
+                                @if (string.IsNullOrWhiteSpace(item.Customer.Description) == false)
+                                {
+                                    <span class="customer-description">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                        </svg>
+                                    </span>
+                                }
+
+                                @if (item.Customer.LastActivity != null)
+                                {
+                                    <span class="customer-install-app">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-mobile-check" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M11.5 21h-3.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v9.5"></path>
+                                            <path d="M11 4h2"></path>
+                                            <path d="M12 17v.01"></path>
+                                            <path d="M15 19l2 2l4 -4"></path>
+                                        </svg>
+                                    </span>
+                                }
+                            </div>
+                            @if (ViewBag.ShowMobile != false)
+                            {
+                                <small class="text-muted"> @item.Customer.Mobile</small>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsTransaction)
+                            {
+                                <span class="payment-type-transaction">کیف پول</span>
+                            }
+                            else
+                            {
+                                <span class="payment-type-project">پروژه</span>
+                            }
+                        </td>
+                        <td class="payment-designer" data-payment-designer="@((item.Project != null && item.Project.Designer != null) ? string.Join(" ", item.Project.Designer.Name.Split(" ").Skip(1)) : null)">
+                                    <span>@item.Project?.Designer?.Name</span>
+                        </td>
+                        <td class="payment-type" data-payment-type="@item.PaymentType">
+                            @if (item.PaymentType == Enums.Enum.PaymentType.ToDesigner)
+                            {
+                                <span>@item.PaymentType.GetDescription() - @item.Designer.Name</span>
+                            }
+                            else
+                            {
+                                <span>@item.PaymentType.GetDescription()</span>
+                            }
+                        </td>
+                        <td>@item.Description</td>
+                        <td>@item.Price.ToString("N0")</td>
+                        <td>
+                            @{
+                                var url = "/customer/details/" + item.Customer.Id;
+
+                                if (item.IsTransaction == false)
+                                {
+                                    url = "/edit/" + (item.Project.ProjectId != null ? item.Project.ProjectId : item.Project.Id);
+                                }
+                            }
+
+                            <a href="@url" style="text-decoration: none;">
+                                <svg style="vertical-align: middle; cursor: pointer;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#7367f0" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                    <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                </svg>
+                            </a>
+                            @if (User.IsInRole("Manager"))
+                            {
+                                <a style="color: #4be1ab; cursor: pointer; text-decoration: none; margin-right: 9px;" onclick="getPayment('@item.Id')">
+                                    @*<i class='fa fa-edit'></i>*@
+                                    <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="invoice-row-51054151-send-icon" class="feather feather-edit">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </a>
+                            }
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @* <div class="FormBoxInner">
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12" style="">
+    <label style="margin:0px;">کارفرما</label>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12" style="">
+    <select class="search-designer" style="margin-top: -7px;">
+    <option value="">طراح</option>
+    @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority).ThenBy(c => c.TodayPrice))
+    {
+    <option value="@string.Join(" ", item.Name.Split(" ").Skip(1))">
+    @item.Name
+    </option>
+    }
+    </select>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+    <label style="margin:0px;">دسته بندی</label>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-12 col-xs-12">
+    <select class="search-payment">
+    <option value="">نحوه پرداخت</option>
+    <option value="پوز سامان">پوز سامان</option>
+    <option value="پوز ملت">پوز ملت</option>
+    <option value="واریز به سامان">واریز به سامان</option>
+    <option value="واریز به ملت">واریز به ملت</option>
+    <option value="واریز به پاسارگاد">واریز به پاسارگاد</option>
+    <option value="نقدی">نقدی</option>
+    <option value="برداشت از اعتبار">برداشت از اعتبار</option>
+    <option value="اصلاح سند">اصلاح سند</option>
+    <option value="پس دادن به مشتری">پس دادن به مشتری</option>
+    <option value="انتقال به اعتبار">انتقال به اعتبار</option>
+    <option value="واریز به طراح">واریز به طراح</option>
+    </select>
+    </div>
+    <div class="margin-top-15 FormDiv col-100-9">
+    <label style="margin:0px;">مبلغ</label>
+    </div>
+    <div class="col-100-9">
+    </div>
+    @foreach (var item in Model.Payment)
+    {
+    <div class="li-project">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="Hr margin-top-15"></div>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12" style="@(item.Balance < 0 ? "color: #eb4e36;" : (item.Balance > 0 || item.Credit > 0) ? "color: #43d29e;" : null)">
+    <a class="customer-link" href="/customer/details/@item.Customer.Id">@item.Customer.LastName @item.Customer.FirstName</a>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12" style="">
+    @if (item.IsTransaction == false)
+    {
+    @if (item.Project.Designer != null)
+    {
+    <input type="text" class="designer-name" data-designer-name="@string.Join(" ", item.Project.Designer.Name.Split(" ").Skip(1))" value="@item.Project.Designer?.Name" readonly />
+    }
+    else
+    {
+    <input type="text" class="designer-name" data-designer-name="" value="@item.Project.Designer?.Name" readonly />
+    }
+    }
+    else
+    {
+    <input type="text" class="designer-name" data-designer-name="" value="" readonly />
+    }
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+    @if (item.IsTransaction)
+    {
+    <input type="text" value="کیف پول" readonly />
+    }
+    else
+    {
+    <input type="text" value="@item.Project.ProjectCategory.GetDescription()" readonly />
+    }
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-3 col-md-3 col-sm-12 col-xs-12">
+    @if (item.PaymentType == Enums.Enum.PaymentType.ToDesigner)
+    {
+    <input type="text" class="payment-name" value="@item.PaymentType.GetDescription() - @item.Designer.Name" readonly />
+    }
+    else
+    {
+    <input type="text" class="payment-name" value="@item.PaymentType.GetDescription()" readonly />
+    }
+    </div>
+    <div class="margin-top-15 FormDiv col-100-9">
+    <input type="text" value="@item.Price.ToString("N0")" readonly />
+    </div>
+    <div class="col-100-9">
+    @if (item.IsTransaction)
+    {
+    <a href="/customer/details/@item.Customer.Id" class="btn btn-success" style="margin-top: 15px; border-radius:5px;">مشاهده</a>
+    }
+    else
+    {
+    <a href="/edit/@(item.Project.ProjectId != null ? item.Project.ProjectId: item.Project.Id)" class="btn btn-success" style="margin-top: 15px; border-radius:5px;">مشاهده</a>
+    }
+    </div>
+    </div>
+    }
+    </div> *@
+</div>
+
+
+
+@* <partial name="/views/payment/Details.cshtml" model="ViewBag.Payment" /> *@

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Payment>
+
+@foreach (var item in Model)
+{
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="Hr margin-top-15"></div>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        <input type="text" value="@item.CreatedAt.ToShamsi().ToShortDateString()" readonly />
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        <input type="text" value="@item.Project.CT.ToShamsi().ToShortDateString()" readonly />
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-6 col-sm-12 col-xs-12">
+        <input type="text" value="@item.PaymentType.GetDescription()" readonly />
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+        <input type="text" value="@item.Project.Customer.LastName @item.Project.Customer.FirstName" readonly />
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1 col-md-1 col-sm-12 col-xs-12">
+        <span class="change-delivery no-delivery @(item.Project.PrintDelivery ? "change-delivery-active" : null)" data-id="@item.Project.Id" data-type="@Enums.Enum.DeliveryType.Print" style="margin-right:0px;">P</span>
+        <span class="change-delivery no-delivery @(item.Project.Telegram ? "change-delivery-active" : null)" data-id="@item.Project.Id" data-type="@Enums.Enum.DeliveryType.Telegram">T</span>
+        <span class="change-delivery no-delivery @(item.Project.Whatsapp ? "change-delivery-active" : null)" data-id="@item.Project.Id" data-type="@Enums.Enum.DeliveryType.Whatsapp">W</span>
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        <input type="text" value="@item.Project.ProjectCategory.GetDescription()" readonly />
+    </div>
+    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        <input type="text" value="@item.Price.ToString("N0")" readonly />
+    </div>
+    <div class="col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+        <a href="/edit/@item.ProjectId" class="btn btn-success" style="border-radius:5px; margin-top: 15px;">مشاهده</a>
+    </div>
+}

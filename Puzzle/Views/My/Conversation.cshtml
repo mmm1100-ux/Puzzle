@@ -1,0 +1,448 @@
+﻿@model Project
+
+@{
+    Layout = "_ChatLayout.cshtml";
+    ViewData["Title"] = Model.Title;
+    int myRole = ViewData["MyRole"].ToInt();
+    string myId = ViewData["MyId"].ToString();
+    string myName = ViewData["MyName"].ToString();
+    int projectId = ViewData["ProjectId"].ToInt();
+    string lastId = null;
+    DateTime? date = null;
+
+    var finishChat = Model.Conversation
+        .Where(x => x.Type == Enums.Enum.MediaType.Render)
+        .Where(x => x.IsDelete == false)
+        .Any();
+
+    foreach (var item in Model.Child)
+    {
+        finishChat = item.Conversation
+            .Where(x => x.Type == Enums.Enum.MediaType.Render)
+            .Where(x => x.IsDelete == false)
+            .Any();
+    }
+}
+
+
+<link href="~/css/plyr.min.css" rel="stylesheet" />
+<link href="~/css/ext-component-media-player.css" rel="stylesheet" />
+
+<link href="~/css/app-conversation.css" rel="stylesheet" asp-append-version="true" />
+
+<script src="~/js/plyr.min.js"></script>
+<script src="~/js/plyr.polyfilled.min.js"></script>
+
+<input id="myRole" type="number" value="@myRole" hidden />
+<input id="myId" value="@myId" hidden />
+<input id="myName" value="@myName" hidden />
+<input id="projectId" type="number" value="@projectId" hidden />
+
+<div id="popover-content-html" class="hide">
+    <div class="popover-reply">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-corner-up-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M6 18v-6a3 3 0 0 1 3 -3h10l-4 -4m0 8l4 -4"></path>
+            </svg>
+        </div>
+        <div>
+            پاسخ
+        </div>
+    </div>
+    <div class="popover-copy">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>
+                <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>
+            </svg>
+        </div>
+        <div>
+            کپی
+        </div>
+    </div>
+    <div class="popover-download">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M7 11l5 5l5 -5"></path>
+                <path d="M12 4l0 12"></path>
+            </svg>
+        </div>
+        <div>
+            دانلود
+        </div>
+    </div>
+    <div class="popover-edit">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+                <path d="M13.5 6.5l4 4"></path>
+            </svg>
+        </div>
+        <div>
+            ویرایش
+        </div>
+    </div>
+    <div class="popover-delete">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 7l16 0"></path>
+                <path d="M10 11l0 6"></path>
+                <path d="M14 11l0 6"></path>
+                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+            </svg>
+        </div>
+        <div>
+            حذف
+        </div>
+    </div>
+</div>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div id="project-chat-box" class="customer-chat-box">
+        <div class="user-chats">
+            <div class="chats" id="chat-light-gallery">
+                @foreach (var item in Model.Conversation)
+                {
+
+                    if (item.Attachment == "ChildForConversation")
+                    {
+                        <div class="divider">
+                            <div class="divider-text">@item.Message افزوده شد</div>
+                        </div>
+                        continue;
+                    }
+
+                    if (item.Role.ToInt() == myRole)
+                    {
+                        <div class="chat chat-right">
+                            <div class="chat-body" id="conversation-@item.Id">
+                                <div class="chat-content" data-name="@myName" data-id="@item.Id">
+
+                                    @if (item.Parent != null)
+                                    {
+                                        <div class="reply-up-message" data-id="@item.ConversationId" style="@((item.Attachment != null ? (item.Type == Enums.Enum.MediaType.File ? "width: 220px; max-width: 100%;" : (item.Attachment.EndsWith(".ogg") ? "width: 220px;" : "width: 120px;")): null))">
+                                            <label>@(item.Parent.Role.ToInt() == myRole ? myName : (item.Parent.Role == Enums.Enum.Role.Designer ? "طراح" : "ادمین"))</label>
+                                            <p>
+                                                @if (item.Parent.Attachment != null)
+                                                {
+                                                    if (item.Parent.Type == Enums.Enum.MediaType.File)
+                                                    {
+                                                        @item.Parent.Attachment
+                                                    }
+                                                    else if (item.Parent.Attachment.EndsWith(".ogg"))
+                                                    {
+                                                        <span>صدا</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            تصویر
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        @item.Parent.Message
+                                                    </span>
+                                                }
+                                            </p>
+                                        </div>
+                                    }
+
+
+
+
+                                    @if (item.Attachment != null)
+                                    {
+                                        if (item.Type == Enums.Enum.MediaType.File)
+                                        {
+                                            <div class="chat-message-file" data-url="@item.Attachment">
+                                                <div class="chat-message-file-icon" onclick="downloadFile(event, '@item.Attachment')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                                                        <path d="M7 11l5 5l5 -5" />
+                                                        <path d="M12 4l0 12" />
+                                                    </svg>
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                    </svg>
+
+                                                    <span class="file-loader"></span>
+                                                </div>
+                                                <div class="chat-message-file-details">
+                                                    <div>@item.FileName</div>
+                                                    <div>@((item.FileSize.Value / 1024.0 / 1024).ToString("0.00")) Mb</div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else if (item.Attachment.EndsWith(".ogg"))
+                                        {
+
+                                            <audio class="audio-player" controls>
+                                                <source src="@item.Attachment" type="audio/ogg" />
+                                            </audio>
+                                        }
+                                        else
+                                        {
+                                            <div href="@item.Attachment" class="chat-light-gallery-selector">
+                                                <img class="message-photo" src="@item.Attachment.Bitmap(480)" loading="lazy" />
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <p class="message-text">@item.Message</p>
+                                    }
+                                </div>
+                                @*@if (item.UserId != null ? item.UserId == myId : item.CustomerId.ToString() == myId)
+                        {
+                        <div class="chat-dropdown" id="dropdown-@item.Id">
+                        @if (item.Message != null)
+                        {
+                        <label class="chat-dropdown-item" onclick="EditMessage(@item.Id)">ویرایش</label>
+                        }
+                        <label class="chat-dropdown-item" onclick="RemoveMessage(@item.Id)">حذف</label>
+                        </div>
+                        }*@
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="chat chat-left">
+
+                            <div class="app-chat-name-avatar">
+                                <div class="app-chat-avatar-role @(item.Role == Enums.Enum.Role.Designer ? "app-chat-name-designer" : "app-chat-name-admin") @(item.UserId == lastId ? "app-hide-avatar" : null)">
+                                    <label>@(item.Role == Enums.Enum.Role.Designer ? "طراح" : "ادمین")</label>
+                                </div>
+                            </div>
+
+
+
+                            @*@{
+                    string popOver = "<div class='chat-popover'><div>";
+                    popOver += @"<svg xmlns=""http://www.w3.org/2000/svg"" class=""icon icon-tabler icon-tabler-corner-up-left"" width=""24"" height=""24"" viewBox=""0 0 24 24"" stroke-width=""2"" stroke=""currentColor"" fill=""none"" stroke-linecap=""round"" stroke-linejoin=""round""><path stroke=""none"" d=""M0 0h24v24H0z"" fill=""none""></path><path d=""M18 18v-6a3 3 0 0 0 -3 -3h-10l4 -4m0 8l-4 -4""></path></svg>";
+                    popOver += "پاسخ</div><div>";
+                    popOver += "<div class='chat-popover'><div>";
+                    }*@
+
+                            <div class="chat-body" id="conversation-@item.Id">
+                                <div class="chat-content" data-name="@(item.Role == Enums.Enum.Role.Designer ? "طراح" : "ادمین")" data-id="@item.Id" data-toggle="popover">
+
+
+                                    @if (item.Parent != null)
+                                    {
+                                        <div class="reply-up-message" data-id="@item.ConversationId" style="@((item.Attachment != null ? (item.Attachment.EndsWith(".ogg") ? "width: 220px;" : "width: 120px;"): null))">
+                                            <label>@(item.Parent.Role.ToInt() == myRole ? myName : (item.Parent.Role == Enums.Enum.Role.Designer ? "طراح" : "ادمین"))</label>
+                                            <p>
+                                                @if (item.Parent.Attachment != null)
+                                                {
+                                                    if (item.Parent.Type == Enums.Enum.MediaType.File)
+                                                    {
+                                                        @item.Parent.Attachment
+                                                    }
+                                                    else if (item.Parent.Attachment.EndsWith(".ogg"))
+                                                    {
+                                                        <span>صدا</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            تصویر
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        @item.Parent.Message
+                                                    </span>
+                                                }
+                                            </p>
+                                        </div>
+                                    }
+
+                                    <div>
+                                        @if (item.Attachment != null)
+                                        {
+                                            if (item.Type == Enums.Enum.MediaType.File)
+                                            {
+                                                <div class="chat-message-file" data-url="@item.Attachment">
+                                                    <div class="chat-message-file-icon" onclick="downloadFile(event, '@item.Attachment')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                                                            <path d="M7 11l5 5l5 -5" />
+                                                            <path d="M12 4l0 12" />
+                                                        </svg>
+
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                        </svg>
+
+                                                        <span class="file-loader"></span>
+                                                    </div>
+                                                    <div class="chat-message-file-details">
+                                                        <div>@item.FileName</div>
+                                                        <div>@((item.FileSize.Value / 1024.0 / 1024).ToString("0.00")) Mb</div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (item.Attachment.EndsWith(".ogg"))
+                                            {
+                                                <audio class="audio-player" controls>
+                                                    <source src="@item.Attachment" type="audio/ogg" />
+                                                </audio>
+                                            }
+                                            else
+                                            {
+                                                var totalPrice = item.Project.TotalPrice > 0 ? item.Project.TotalPrice : item.Project.Approximate;
+                                                var orginal = item.Project.TotalPayment >= totalPrice;
+                                                orginal = orginal || item.Project.App || item.Project.Whatsapp || item.Project.Telegram || item.Project.PrintDelivery || item.Project.Eitaa || item.Project.Soroush || item.Project.Rubika || item.Project.Other || item.Project.Flash;
+
+                                                if (item.Type == Enums.Enum.MediaType.Render && (orginal == false))
+                                                {
+                                                    <div class="chat-light-gallery-selector-pre">
+                                                        <img class="message-photo" src="@item.Attachment.Bitmap(48)" loading="lazy" />
+                                                        <span>منتظر پرداخت</span>
+                                                    </div>
+                                                }
+                                                else if (item.Type == Enums.Enum.MediaType.Screen && ((orginal || item.Project.Screenshot) == false))
+                                                {
+                                                    <div class="chat-light-gallery-selector-pre">
+                                                        <img class="message-photo" src="@item.Attachment.Bitmap(48)" loading="lazy" />
+                                                        <span>منتظر پرداخت</span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div href="@item.Attachment.Bitmap(1920, 100)" class="chat-light-gallery-selector">
+                                                        <img class="message-photo" src="@item.Attachment.Bitmap(480)" loading="lazy" />
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="message-text">@item.Message</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    lastId = item.UserId;
+                }
+
+                <div class="end-chat"></div>
+
+            </div>
+        </div>
+
+        <div class="chat-reply-box">
+            <div class="chat-reply-body">
+                <div class="chat-reply-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="chat-reply-content">
+                    <label></label>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+
+        <form class="chat-app-form" id="chat-app-form" action="javascript:void(0);" onsubmit="enterChat();" style="@(finishChat ? "display: none;" : null)">
+            <div class="form-send-message">
+                <input type="text" autocomplete="off" class="form-control-input message" id="messageInput" placeholder="پیام ..." />
+            </div>
+            @{
+                <span id="recordButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-microphone" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                        <path d="M5 10a7 7 0 0 0 14 0"></path>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </span>
+                <span id="stopButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-player-pause" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+                        <path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+                    </svg>
+                </span>
+                <input id="photoInput" onchange="sendPhoto(event)" type="file" multiple name="media" style="visibility: hidden; display: none;" accept="capture=camera,image/*" />
+                <span id="selectPhoto" onclick="selectPhoto()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <line x1="15" y1="8" x2="15.01" y2="8"></line>
+                        <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                        <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+                        <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+                    </svg>
+                </span>
+                <input id="fileInput" onchange="sendFile(event)" type="file" style="visibility: hidden; display: none;" />
+                <label style="margin: 0px 15px; line-height: 0px; color: rgb(255 255 255 / 80%); cursor: pointer;" for="fileInput">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-paperclip" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
+                    </svg>
+                </label>
+            }
+            <button type="button" class="btn btn-primary send send-btn" id="sendButton" onclick="enterChat();">
+                <span id="send-btn-text">ارسال</span>
+            </button>
+        </form>
+
+
+
+
+        <div class="chat-bottom-done" style="@(finishChat == false ? "display: none;" : null)">
+            <p>
+                پروژه مورد نظر پایان یافته است
+                <br />
+                برای تغییرات یا اصلاحیه، درخواست متمم دهید
+            </p>
+            <div>
+                افزودن متمم
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* @foreach (var item in Model.Conversation.Where(x => x.Attachment.Contains("project")))
+{
+    <img rel="prefetch" src="/photo/1920@(item.Attachment)?format=jpeg&quality=100" hidden />
+}
+ *@
+
+<div class="upload-progress">
+    <div class="upload-progress-container">
+        <div>در حال آپلود فایل ...</div>
+        <div class="upload-progress-bar">
+            <div></div>
+        </div>
+        <div class="upload-progress-size"></div>
+    </div>
+</div>

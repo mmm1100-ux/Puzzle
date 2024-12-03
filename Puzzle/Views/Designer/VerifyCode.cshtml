@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewData["Title"] = "VerifyCode";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="verify-code">
+    <h2>تایید ورود</h2>
+    <form method="post">
+        <label>کد عبور</label>
+        <input autocomplete="off" autofocus name="code" type="number" />
+        <button type="submit">تایید کد</button>
+    </form>
+
+    <label class="send-code">دریافت کد اعتبارسنجی</label>
+</div>
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+@section Scripts{
+    <script>
+        $('.send-code').click(() => {
+            $.post({
+                url: '/designer/sendcode',
+                success: function (result, status, xhr) {
+                        $('#AlertMessage').html('<p>کد جدید برای شما ارسال شد</p>').fadeIn(500).delay(3000).fadeOut(500);
+                }
+            });
+        })
+    </script>
+}

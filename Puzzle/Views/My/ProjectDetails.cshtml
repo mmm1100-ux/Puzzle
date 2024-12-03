@@ -1,0 +1,126 @@
+﻿@model List<Media>
+
+@{
+    Layout = "_AppLayout.cshtml";
+    int light = 0;
+}
+
+<div style="margin-top: 30px;"></div>
+@foreach (var item in Model.GroupBy(x => x.Description))
+{
+
+    <div style="max-width: 500px; margin: 0px auto; padding: 0px 15px 25px 15px;">
+
+        <div class="project-details-title">
+            <span>@(string.IsNullOrWhiteSpace(item.Key) ? "بدون نام" : item.Key)</span>
+        </div>
+
+        @if (item.Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
+        {
+
+            light++;
+
+            <div class="project-details-box">
+                <div class="project-details-header">
+                    <h5>رندرها</h5>
+                    @if (Model.Where(x => x.ProjectId == 39800).Any())
+                    {
+                        <label>دانلود همه</label>
+                    }
+                </div>
+                <div class="project-details-images" style="padding-bottom: 0;">
+                    <div class="project-details-lightgallery" id="project-details-lightgallery-@light">
+                        @foreach (var render in item.Where(x => x.Type == Enums.Enum.MediaType.Render).OrderByDescending(x => x.CreatedAt))
+                        {
+
+                            <div class="project-details-image">
+                                @if (render.Status == Enums.Enum.MediaStatus.New)
+                                {
+                                    <a class="lightgallery-selector-pre">
+                                        <img class="" src="@render.Url.Bitmap(48)" style="width: 100%" />
+                                        <span>منتظر پرداخت</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@render.Url.Bitmap(1920, 100)" class="lightgallery-selector">
+                                        <img class="" src="@render.Url.Bitmap(480)" style="width: 100%" />
+                                    </a>
+                                }
+
+                                <div class="project-details-time">
+                                    <span>@render.CreatedAt.ToShamsi().ToString("yyyy/MM/dd")</span>
+                                    <span>@render.CreatedAt.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (item.Where(x => x.Type == Enums.Enum.MediaType.Screen).Any())
+        {
+            light++;
+
+            <div class="project-details-box">
+                <div class="project-details-header">
+                    <h5>اسکرین شات ها</h5>
+                    @if (Model.Where(x => x.ProjectId == 39800).Any())
+                    {
+                        <label>دانلود همه</label>
+                    }
+                </div>
+                <div class="project-details-images" style="padding-bottom: 0;">
+                    <div class="project-details-lightgallery" id="project-details-lightgallery-@light">
+                        @foreach (var screen in item.Where(x => x.Type == Enums.Enum.MediaType.Screen).OrderByDescending(x => x.CreatedAt))
+                        {
+
+                            <div class="project-details-image">
+                                @if (screen.Status == Enums.Enum.MediaStatus.New)
+                                {
+                                    <a class="lightgallery-selector-pre">
+                                        <img class="" src="@screen.Url.Bitmap(48)" />
+                                        <span>منتظر پرداخت</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@screen.Url.Bitmap(1920, 100)" class="lightgallery-selector">
+                                        <img class="" src="@screen.Url.Bitmap(480)" />
+                                    </a>
+                                }
+
+                                <div class="project-details-time">
+                                    <span>@screen.CreatedAt.ToShamsi().ToString("yyyy/MM/dd")</span>
+                                    <span>@screen.CreatedAt.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        } @*<div class="project-media-download-all">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M15 8h.01"></path>
+    <path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5"></path>
+    <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4"></path>
+    <path d="M14 14l1 -1c.653 -.629 1.413 -.815 2.13 -.559"></path>
+    <path d="M19 16v6"></path>
+    <path d="M22 19l-3 3l-3 -3"></path>
+    </svg>
+    </div>*@
+    </div>
+}
+
+@if (Model.Any() == false)
+{
+
+    <div style="padding: 80px 0px; color: #fff; opacity:0.8; text-align: center; direction: rtl;">تصویری وجود ندارد!</div>
+}
+
+@* @foreach (var item in Model)
+{
+    <img rel="prefetch" src="@item.Url.Bitmap(1920, 100)" hidden />
+} *@

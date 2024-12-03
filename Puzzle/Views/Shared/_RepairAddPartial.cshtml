@@ -1,0 +1,141 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{ }
+
+<style>
+    .repair-add-box {
+        position: fixed;
+        background: #fff;
+        width: 670px;
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+        padding: 25px;
+        box-shadow: 0 7px 21px rgba(75 70 92 / 26%), 0 0 transparent, 0 0 transparent;
+        display: none;
+        overflow: auto;
+    }
+</style>
+
+<div class="repair-add-box">
+    <p style="padding-right: 20px; border-bottom: 1px solid #f0f2f7; margin: -9px -25px 0px -25px; padding-bottom: 12px;">افزودن تغییرات یا اصلاحیه</p>
+    <form action="/repair/add" method="post">
+        <input class="projectId" name="ProjectId" hidden />
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>عنوان</label>
+            <input name="Title" />
+        </div>
+
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>دسته بندی</label>
+            <select name="ProjectCategory" id="ProjectCategory" onchange="changeCategory()">
+                <option value="@Enums.Enum.ProjectCategory.Amendment">اصلاحیه</option>
+                <option value="@Enums.Enum.ProjectCategory.Edit">تغییرات</option>
+            </select>
+        </div>
+        <div class="FormDiv col-lg-4" hidden>
+            <label>نوع</label>
+            <select name="Type">
+                <option value="">نامشخص</option>
+                <option value="@Enums.Enum.Quality.Standard">استاندارد</option>
+                <option value="@Enums.Enum.Quality.VIP">VIP</option>
+                <option value="@Enums.Enum.Quality.Animation">انیمیشن</option>
+            </select>
+        </div>
+        <div class="FormDiv col-lg-4" hidden>
+            <label>طراح</label>
+            <select name="DesignerId">
+                <option value="">نامشخص</option>
+                @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority).ThenBy(c => c.TodayPrice))
+                {
+    <option value="@item.Id">
+        @item.TodayCount &nbsp;&nbsp;/&nbsp;&nbsp; @item.Name &nbsp;&nbsp;/&nbsp;&nbsp; @item.TodayPrice
+    </option>}
+            </select>
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>نحوه دریافت سفارش</label>
+            <select name="OrderType">
+                <option value="@Enums.Enum.OrderType.Office">حضوری</option>
+                <option value="@Enums.Enum.OrderType.Online">آنلاین</option>
+                <option value="@Enums.Enum.OrderType.Whatsapp">واتساپ</option>
+                <option value="@Enums.Enum.OrderType.Telegram">تلگرام</option>
+                <option value="@Enums.Enum.OrderType.Soroush">سروش</option>
+                <option value="@Enums.Enum.OrderType.Eitaa">ایتا</option>
+                <option value="@Enums.Enum.OrderType.Rubika">روبیکا</option>
+                <option value="@Enums.Enum.OrderType.App">اپلیکیشن</option>
+                <option value="@Enums.Enum.OrderType.Other">غیره</option>
+            </select>
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>وضعیت</label>
+            <select name="Status">
+                <option value="@Enums.Enum.Status.New">جدید</option>
+                <option value="@Enums.Enum.Status.Complete">تکمیل شده</option>
+            </select>
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>تاریخ رسید</label>
+            <input name="Receipt" type="text" class="date-picker" id="date-picker-@(new Random().Next())" value="@(DateTime.Today.ToShortDate())" autocomplete="off" />
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>تاریخ تحویل</label>
+            <input name="Delivery" type="text" class="date-picker" id="date-picker-@(new Random().Next())" value="@(DateTime.Today.AddDays(1).ToShortDate())" autocomplete="off" />
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px; display: none;">
+            <label>هزینه کل (تومان)</label>
+            <input name="TotalPrice" class="TotalPrice" id="TotalPrice" type="text" autocomplete="off" />
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px; display: none;">
+            <label>هزینه پیش بینی شده (تومان)</label>
+            <input name="Approximate" class="Approximate" id="Approximate" type="text" autocomplete="off" />
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+            <label>پرینت</label>
+            <input name="Print" value="true" id="print-add-repair" class="Print-Repair" type="checkbox" hidden />
+            <label for="print-add-repair" style="margin-top:0px;" class="active-label">پرینت</label>
+            <label for="print-add-repair" style="margin-top:0px;" class="deactive-label">پرینت</label>
+        </div>
+        <div class="FormDiv col-lg-4" style="margin-top: 20px; display: none;">
+            <label>مبلغ پرینت (تومان)</label>
+            <input name="PrintPrice" id="PrintPrice" value="@Setting.Print(DateTime.Today)" type="text" autocomplete="off" />
+        </div>
+
+        <div class="FormDiv col-lg-12" style="margin-top: 20px;">
+            <label>توضیحات</label>
+            <input name="Description" class="Description" autocomplete="off" />
+        </div>
+        <div id="payment-box" style="display: none;">
+            <div style="clear:both;"></div>
+            <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+                <label>مبلغ (تومان)</label>
+                <input name="PaymentPrice" class="PaymentPrice" type="text" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+                <label>تاریخ</label>
+                <input name="PaymentDate" type="text" class="datepicker" id="price-datepicker0" value="@(DateTime.Today.ToShortDate())" readonly autocomplete="off" />
+            </div>
+            <div class="FormDiv col-lg-4" style="margin-top: 20px;">
+                <label>نوع</label>
+                <select name="PaymentType" style="border-color: #f3d351;">
+                    <option value="@(Enums.Enum.PaymentType.SamanCart)">پوز سامان</option>
+                    <option value="@(Enums.Enum.PaymentType.MellatCart)">پوز ملت</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToSaman)">واریز به سامان</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToMellat)">واریز به ملت</option>
+                    <option value="@(Enums.Enum.PaymentType.DepositToPasargad)">واریز به پاسارگاد</option>
+                    <option value="@(Enums.Enum.PaymentType.Cash)">نقدی</option>
+                    <option value="@(Enums.Enum.PaymentType.FromCredit)">برداشت از اعتبار</option>
+                    <option value="@(Enums.Enum.PaymentType.NewFound)">اصلاح سند</option>
+                    <option value="@(Enums.Enum.PaymentType.Return)">پس دادن به مشتری</option>
+                    <option value="@(Enums.Enum.PaymentType.ToCredit)">انتقال به اعتبار</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><div class="Hr" style="margin-top: 20px;"></div></div>
+        <label style="display: block; margin-right: 10px; margin-top: 20px;" onclick="RepairAddSave(false)" class="btn btn-primary btn-120">ذخیره</label>
+        <label style="display: block; margin-right: 10px; margin-top: 20px; background: #fff; color: #3b55e6 !important; border: 1px solid #3b55e6;" onclick="RepairAddSave(true)" class="btn btn-primary btn-120">ذخیره و ادامه</label>
+        <a style="color: #a1a6bb !important; border-color: #a1a6bb; margin-right: 10px; margin-top: 20px;" class="btn btn-danger-outline btn-120" onclick="hideAddRepair()">انصراف</a>
+    </form>
+</div>

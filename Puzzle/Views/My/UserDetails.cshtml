@@ -1,0 +1,19 @@
+﻿@model Controllers.MyController.UpdateInfoModel
+
+@{
+    Layout = "_MyLayout.cshtml";
+}
+
+<div class="user-details-box">
+
+    <label class="user-details-title">ثبت اطلاعات کاربری</label>
+    <p>لطفا مشخصات خود را تکمیل نمایید</p>
+
+    <input id="firstname" class="firstname" placeholder="نام" autocomplete="off" value="@Model.FirstName" />
+    <input id="lastname" class="lastname" placeholder="نام خانوادگی" autocomplete="off" value="@Model.LastName" />
+    <input id="city" class="city" placeholder="شهر" autocomplete="off" value="@Model.City" />
+
+    <div class="submit-btn-box">
+        <label class="submit-btn">ثبت اطلاعات</label>
+    </div>
+</div>

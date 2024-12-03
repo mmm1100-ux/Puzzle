@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/32.png?v=1709797002318">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/16.png?v=1709797002318">
+    <link rel="manifest" href="/manifest.json" asp-append-version="true">
+    <meta name="theme-color" content="#282a37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="دکوپازل">
+    <link rel="apple-touch-icon" href="/images/icons/152.png?v=1709797002318">
+    <link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg?v=1709797002318" color="#ff0076">
+    <meta name="msapplication-TileImage" content="/images/icons/144.png?v=1709797002318">
+    <meta name="msapplication-TileColor" content="#b400ff">
+
+
+
+    <link href="~/lib/lightGallery/css/lightgallery-bundle.css" rel="stylesheet" />
+
+    <link href="~/css/my.css" rel="stylesheet" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/lightGallery/lightgallery.min.js"></script>
+    <script src="~/lib/lightGallery/plugins/thumbnail/lg-thumbnail.min.js"></script>
+    <script src="~/lib/lightGallery/plugins/zoom/lg-zoom.min.js"></script>
+
+    <script src="~/lib/lightGallery/plugins/video/lg-video.min.js"></script>
+
+    <style>
+        .OverHide {
+            background: #3a405b;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            overflow-y: hidden;
+            opacity: 0.5;
+            z-index: 1000;
+            display: none;
+        }
+
+        #Loading {
+            position: fixed;
+            top: 25%;
+            z-index: 1200;
+            display: none;
+            width: 270px;
+            margin-left: calc(50% - 135px);
+        }
+
+            #Loading img {
+                width: 100%;
+            }
+
+        .loading-other {
+            display: none;
+            background: #fff;
+            padding: 0px 20px 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="header">
+            <div class="header-name-pic">
+                <div class="header-pic-box">
+                    <div class="header-pic-alt">
+                        <span>@ViewData["MyName"].ToString().Substring(0, 1)</span>
+                    </div>
+                    <span class="header-pic-badge"></span>
+                </div>
+
+                <div class="header-name">
+                    <p>@ViewData["MyName"]</p>
+                    <p>مجری کابینت و دکوراسیون</p>
+                </div>
+            </div>
+            <div class="header-wallet">
+                <div class="header-wallet-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-credit-card" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
+                        <path d="M3 10l18 0"></path>
+                        <path d="M7 15l.01 0"></path>
+                        <path d="M11 15l2 0"></path>
+                    </svg>
+                </div>
+                <div class="wallet-price">
+                    <p>مانده حساب</p>
+                    <p>
+                        <span>@((ViewData["Accounting"].ToInt() * 1000).ToString("N0"))</span>
+                        <span>تومان</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+    </div>
+    <div class="OverHide" id="OverHide"></div>
+    <div class="Loading" id="Loading">
+        <img class="" src="~/images/Loading.gif" />
+        <div class="loading-other">
+            <div class="">
+                <label class="upload-percent">0%</label>
+                <label class="upload-size">0MB</label>
+            </div>
+            <div class="upload-progress">
+                <div class="upload-progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-fb">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="OverHide2"></div>
+
+    <div class="notif-confirm-modal">
+        <div class="notif-confirm-title">
+            <label>تنظیمات اعلان</label>
+        </div>
+        <div class="notif-confirm-description">
+            <p>
+                برای اطلاع از آخرین پیام ها و بروزرسانی های پروژه، ارسال پیامک برای شما فعال شود؟
+            </p>
+        </div>
+        <div class="notif-confirm-footer">
+            <button class="notif-confirm-no">
+                <span>خیر</span>
+            </button>
+            <button class="notif-confirm-yes">
+                <span>بله، فعال شود</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="add-project-modal">
+        <div class="add-project-modal-title">
+            <label>تکمیل اطلاعات</label>
+        </div>
+        <div class="add-project-modal-description">
+            <p>
+                پروژه شما با موفقیت ثبت شد.
+                <br />
+                طرح شما تا زمان ارسال پلن یا توضیحات اولیه در مرحله پیش ثبت نام می‌باشد. لطفا اطلاعات و پلن پروژه را ارسال کنید.
+            </p>
+        </div>
+        <div class="add-project-modal-footer">
+            <button class="">
+                <span>تایید و ادامه</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="add-repair-modal">
+        <div class="add-repair-modal-title">
+            <label>افزودن متمم</label>
+            <div class="add-repair-modal-close">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M18 6l-12 12"></path>
+                    <path d="M6 6l12 12"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="add-repair-modal-description">
+            <p>
+                لطفا نوع درخواست خود را مشخص نمایید
+            </p>
+            <div class="add-repair-modal-type">
+                <div>اصلاحیه</div>
+                <div>تغییرات</div>
+            </div>
+        </div>
+        <div class="add-repair-modal-footer">
+            <button class="">
+                <span>تایید و ادامه</span>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        // This will append pwaupdate component, which will register your pwabuilder-sw.js file as the service worker.
+        import '/pwaupdate.js';
+        const el = document.createElement('pwa-update');
+        document.body.appendChild(el);
+
+    </script>
+
+    <script src="/lib/firebase-app.js"></script>
+    <script src="/lib/firebase-firestore.js"></script>
+    <script src="/lib/firebase-messaging.js"></script>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyDJlKZz5DB-Ux2nYg80q8V-wIIlpQ7f_DI",
+            authDomain: "puzzle-13d5e.firebaseapp.com",
+            projectId: "puzzle-13d5e",
+            storageBucket: "puzzle-13d5e.appspot.com",
+            messagingSenderId: "58308022725",
+            appId: "1:58308022725:web:a40123a148fdde0edbfbac",
+            measurementId: "G-6LVSM5GLR4"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+    </script>
+
+    <script src="~/js/app.js" asp-append-version="true"></script>
+</body>
+</html>

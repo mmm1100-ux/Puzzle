@@ -1,0 +1,96 @@
+﻿@model IEnumerable<CustomerChat>
+
+@{
+    DateTime? date = null;
+}
+
+<div class="customer-chat">
+    <div class="customer-chat-head">
+        <label>واریزهای @ViewBag.Customer.FirstName @ViewBag.Customer.LastName</label>
+        <input class="customer-id" value="@ViewBag.Customer.Id" hidden />
+    </div>
+    <div class="customer-chat-body">
+        <div id="customer-chat-light-gallery">
+            <div>
+                @foreach (var item in Model)
+                {
+                    if (item.CreatedAt.Date != date)
+                    {
+                        date = item.CreatedAt.Date;
+
+                        <div class="divider">
+                            @if (date == DateTime.Today)
+                            {
+                                <div class="divider-text">امروز</div>
+                            }
+                            else if (date == DateTime.Today.AddDays(-1))
+                            {
+                                <div class="divider-text">دیروز</div>
+                            }
+                            else
+                            {
+                                <div class="divider-text">@date.Value.ToShamsi().ToShortDateString()</div>
+                            }
+                        </div>
+                    }
+
+                    <div class="@(item.UserId == null ? "customer-chat-left" : null)">
+                        <div href="@item.Attachment.Bitmap(1920, 100)" class="customer-chat-light-gallery-selector">
+                            <img class="customer-chat-photo" src="@item.Attachment.Bitmap(480)" />
+                        </div>
+
+                        <div class="customer-chat-time-read">
+                            <span>@item.CreatedAt.ToString("HH:mm")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <form class="customer-chat-form" action="javascript:void(0);">
+            <div class="customer-chat-input">
+                <input type="text" autocomplete="off" placeholder="پیام ...">
+            </div>
+            <span id="customer-chat-start-record">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                    <path d="M5 10a7 7 0 0 0 14 0"></path>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+            </span>
+            <span id="customer-chat-stop-record">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" stroke-width="0" fill="currentColor"></path>
+                    <path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" stroke-width="0" fill="currentColor"></path>
+                </svg>
+            </span>
+            <span id="customer-chat-select-photo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <line x1="15" y1="8" x2="15.01" y2="8"></line>
+                    <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+                    <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5"></path>
+                    <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2"></path>
+                </svg>
+            </span>
+            <button type="button" class="customer-chat-send">
+                <span>ارسال</span>
+            </button>
+        </form>
+
+
+
+        <div class="customer-chat-upload">
+            <p>
+                از اینجا فقط برای ارسال فاکتور استفاده کنید
+            </p>
+            <input type="file" accept="capture=camera,image/*" />
+            <div>
+                بارگذاری صورتحساب
+            </div>
+        </div>
+    </div>
+</div>

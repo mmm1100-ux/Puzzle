@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"] | پازل</title>
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/lib/Datepicker/style/kamadatepicker.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/Datepicker/src/kamadatepicker.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/Chart Js/Chart.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

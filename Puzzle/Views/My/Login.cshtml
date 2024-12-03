@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "_MyLayout.cshtml";
+}
+
+<div class="login">
+    <div class="login-icon">
+        <img src="~/images/app/login-icon.png" />
+    </div>
+    <div class="login-title">
+        <div class="login-title-h1">ورود کاربران</div>
+        <div class="login-title-h2">دفتر طراحی دکوپازل</div>
+    </div>
+    <div>
+        <input placeholder="موبایل خود را وارد نمایید" />
+
+        <div class="login-role">
+            
+            <input hidden type="checkbox" id="login-role-checkbox" />
+            <label for="login-role-checkbox" class="login-role-checkbox-label">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l5 5l10 -10" /></svg>
+            </label>
+            <p>با <a href="https://privacy.puzzlearchitect.ir">قوانین و مقررات پازل</a> موافقم.</p>
+            
+        </div>
+
+        <button onclick="login(event)">دریافت کد فعالسازی</button>
+    </div>
+
+</div>
+
+<div class="verify">
+    <div class="login-icon">
+        <img src="~/images/app/login-icon.png" />
+    </div>
+    <div class="login-title">
+        <div class="login-title-h1">ورود کاربران</div>
+        <div class="login-title-h2">دفتر طراحی دکوپازل</div>
+    </div>
+    <div>
+        <input disabled />
+        <input placeholder="کد را وارد نمایید" />
+        <button onclick="verify(event)">ورود به حساب</button>
+    </div>
+    <div class="">
+        <a class="change-mobile-btn">تغییر شماره همراه</a>
+    </div>
+</div>

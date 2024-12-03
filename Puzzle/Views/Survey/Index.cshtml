@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Survey>
+@{
+    ViewData["Title"] = "نظرسنجی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+}
+
+<div class="row" id="Project">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
+        <div class="FormBox">
+            <div class="FormBoxTitle">
+                <label>نظرسنجی</label>
+            </div>
+            <div class="FormBoxInner">
+                <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                    <label>امتیاز</label>
+                </div>
+                <div class="margin-top-15 FormDiv col-lg-9 col-md-8 col-sm-12 col-xs-12">
+                    <label>انتقاد و پیشنهاد</label>
+                </div>
+                @foreach (var item in Model.OrderByDescending(c => c.Date))
+                {
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="Hr margin-top-15"></div>
+                    </div>
+                    <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                        <input type="text" value="@item.Vote" readonly />
+                    </div>
+                    <div class="margin-top-15 FormDiv col-lg-9 col-md-8 col-sm-12 col-xs-12">
+                        <input type="text" value="@item.Description" readonly />
+                    </div>
+                    <div class="col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+                        <a href="/Edit/@item.ProjectId" class="btn btn-success" style="border-radius:5px; margin-top:15px;">پروژه</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,36 @@
+﻿@model Deposit
+@{
+    ViewData["Title"] = "جدید";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="create" id="form">
+    <div class="FormBox">
+        <div class="FormBoxTitle">
+            <label>جدید</label>
+        </div>
+        <div class="FormBoxInner">
+            <div class="FormDiv col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                <label>مبلغ (تومان)</label>
+                <input asp-for="Price" min="0" value="0" />
+            </div>
+            <div class="FormDiv col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                <label>تاریخ</label>
+                <input asp-for="CreatedAt" type="text" autocomplete="off" class="date-picker" />
+            </div>
+            <div class="FormDiv col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                <label>طراح</label>
+                <select asp-for="DesignerId" asp-items="ViewBag.Designer">
+                </select>
+            </div>
+            <div class="FormDiv col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <label>توضیحات</label>
+                <input asp-for="Description" autocomplete="off" />
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><div class="Hr"></div></div>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 col-lg-pull-4-5 col-md-pull-4-5 col-sm-pull-4 col-xs-pull-3">
+                <button type="submit" class="btn btn-primary">ثبت</button>
+            </div>
+        </div>
+    </div>
+</form>

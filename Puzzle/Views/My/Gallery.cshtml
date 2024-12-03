@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "_AppLayout.cshtml";
+}
+
+<div class="app-gallery">
+    <div class="app-gallery-title">نمونه کارها</div>
+    <div class="app-gallery-container">
+        <a href="/my/gallerysearch/cabinet" class="app-gallery-category">
+            <img src="@("/images/app/cabinet.jpg".Bitmap(720))" />
+            <label>کابینت</label>
+            <p>@(new Puzzle.Repository.MediaRepository().GalleryCount("cabinet")) پروژه</p>
+        </a>
+        <a href="/my/gallerysearch/decor" class="app-gallery-category" @* style="order: 2;" *@>
+            <img src="@("/images/app/decor.jpg".Bitmap(720))" />
+            <label>دکوراسیون داخلی</label>
+            <p>@(new Puzzle.Repository.MediaRepository().GalleryCount("decor")) پروژه</p>
+        </a>
+        <a href="/my/gallerysearch/official" class="app-gallery-category" @* style="order: 3;" *@>
+            <img src="@("/images/app/official.jpg".Bitmap(720))" />
+            <label>فروشگاهی و اداری</label>
+            <p>@(new Puzzle.Repository.MediaRepository().GalleryCount("official")) پروژه</p>
+        </a>
+        <a href="/my/gallerysearch/area" class="app-gallery-category">
+            <img src="@("/images/app/area.jpg".Bitmap(720))" />
+            <label>محوطه و نمای ساختمان</label>
+            <p>@(new Puzzle.Repository.MediaRepository().GalleryCount("area")) پروژه</p>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,409 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "ویرایش";
+    Layout = ViewBag.Layout ? "~/Views/Shared/_Layout.cshtml" : "";
+    int i = 1;
+    //int count = Model.Project.Project.Count();
+    //double sum = Model.Project.Sum(c => c.Project.Wage);
+    int payment = Model.Payment.Sum(c => c.Price);
+}
+<form id="form">
+    <div class="FormBox">
+        <div class="FormBoxTitle">
+            <label>ویرایش</label>
+        </div>
+        <div class="FormBoxInner">
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label class="Mobile_Label">نام و نام خانوادگی</label>
+                <input asp-for="Name" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label id="phonenumber-label">شماره تماس</label>
+                <input asp-for="PhoneNumber" autocomplete="off" maxlength="11" onblur="MobileValidation()" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>تاریخ تولد</label>
+                <input asp-for="Birthday" type="text" value="@Model.Birthday?.ToShortDateString()" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>درصد همکاری</label>
+                <input asp-for="Percent" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>ترتیب</label>
+                <select asp-for="Priority">
+                    <option value="0">اول</option>
+                    <option value="1">دوم</option>
+                    <option value="2">سوم</option>
+                    <option value="3">چهارم</option>
+                    <option value="4">پنجم</option>
+                </select>
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>رمز عبور</label>
+                <input name="Password" type="text" id="Password" autocomplete="off" />
+            </div>
+            <div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12">
+                <label>وضعیت</label>
+                <input asp-for="IsActive" hidden />
+                <label for="IsActive" class="active-label">فعال</label>
+                <label for="IsActive" class="deactive-label">غیرفعال</label>
+            </div>
+            @*<div class="FormDiv col-lg-2-4 col-md-3 col-sm-4 col-xs-12" hidden>
+                <label>شماره کارت</label>
+                <input asp-for="CardNumber" autocomplete="off" />
+            </div>*@
+            <div class="FormDiv col-lg-7-2 col-md-6 col-sm-12 col-xs-12">
+                <label>توضیحات</label>
+                <input asp-for="Description" autocomplete="off" />
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><div class="Hr"></div></div>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 col-lg-pull-4-5 col-md-pull-4-5 col-sm-pull-4 col-xs-pull-3">
+                <input asp-for="Id" type="hidden" />
+                <button type="submit" class="btn btn-primary">ثبت</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="FormBox">
+    <div class="FormBoxTitle">
+        <label>مالی</label>
+    </div>
+    <div class="FormBoxInner">
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>مجموع حق الزحمه</label>
+            <input type="text" value="@Model.TotalWage.ToString("N3")" readonly />
+        </div>
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>مجموع واریز</label>
+            <input type="text" value="@Model.Deposit.Sum(c => c.Price).ToString("N3")" readonly />
+        </div>
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>باقی مانده</label>
+            <input type="text" value="@((Model.TotalWage - Model.Deposit.Sum(c => c.Price)).ToString("N3"))" style="direction: ltr; text-align: right;" readonly />
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><div class="Hr"></div></div>
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>از تاریخ</label>
+            <input type="text" name="from" class="datepicker" autocomplete="off" id="datepicker-from" value="@Model.FromDate.ToShamsi().ToShortDateString()" />
+        </div>
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>تا تاریخ</label>
+            <input type="text" name="to" class="datepicker" autocomplete="off" id="datepicker-to" value="@Model.ToDate.ToShamsi().ToShortDateString()" />
+        </div>
+        @*<div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>تعداد پروژه دوره</label>
+            <input type="text" value="@Model.Project.TotalRow.ToString("N0")" readonly />
+        </div>*@
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>حق الزحمه دوره</label>
+            <input type="text" value="@Model.Wage.ToString("N3")" readonly />
+        </div>
+        <div class="FormDiv col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label>باقی مانده دوره</label>
+            <input type="text" value="@((Model.Wage - Model.Deposit.Sum(c => c.Price)).ToString("N3"))" style="direction: ltr; text-align: right;" readonly />
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <input asp-for="Id" type="hidden" />
+            <button onclick="refresh()" class="btn btn-success" style="border-radius:5px; margin-top: 53px;">محاسبه مجدد</button>
+        </div>
+    </div>
+</div>
+
+<div class="FormBox">
+    <div class="FormBoxTitle minimize active">
+        <label>واریزها</label>
+    </div>
+    <div class="FormBoxInner" hidden>
+        <div class="FormDiv margin-top-15 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <label style="margin:0px;">توضیحات</label>
+        </div>
+        <div class="FormDiv margin-top-15 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">مبلغ</label>
+        </div>
+        <div class="FormDiv margin-top-15 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">تاریخ</label>
+        </div>
+        <div class="col-lg-2 margin-top-15 col-md-2 col-sm-12 col-xs-12">
+        </div>
+        @foreach (var item in Model.Deposit)
+        {
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="Hr margin-top-15"></div>
+            </div>
+            <div class="FormDiv  margin-top-15 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                @if (item.Description != null && item.Description.StartsWith("ProjectId="))
+                {
+                    <input type="text" value="واریز توسط مشتری - @item.Description.Split(";Customer=")[1]" readonly />
+                }
+                else if (item.Description != null && item.Description.StartsWith("CustomerId="))
+                {
+                    <input type="text" value="واریز توسط مشتری - @item.Description.Split(";Customer=")[1]" readonly />
+                }
+                else
+                {
+                    <input type="text" value="@item.Description" readonly />
+                }
+            </div>
+            <div class="FormDiv  margin-top-15 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@item.Price.ToString("N3")" readonly />
+            </div>
+            <div class="FormDiv  margin-top-15 col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                <input type="text" value="@item.CreatedAt.ToShamsi().ToShortDateString()" readonly />
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                @if (item.Description != null && item.Description.StartsWith("ProjectId="))
+                {
+                    <a href="/edit/@item.Description.Split(";Customer=")[0].Replace("ProjectId=", null)" class="margin-top-15 btn btn-success" style="border-radius:5px;">مشاهده</a>
+                }
+                else if (item.Description != null && item.Description.StartsWith("CustomerId="))
+                {
+                    <a href="/customer/details/@item.Description.Split(";Customer=")[0].Replace("CustomerId=", null)" class="margin-top-15 btn btn-success" style="border-radius:5px;">مشاهده</a>
+                }
+                else
+                {
+                    <a asp-action="edit" class="margin-top-15 btn btn-success" asp-route-Id="@item.Id" style="border-radius:5px;">مشاهده</a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<div class="FormBox">
+    <div class="FormBoxTitle minimize active">
+        <label>پروژه‌ها</label>
+    </div>
+    <div class="project-tab" style="display: none; border-bottom: 1px solid #f0f2f7;">
+        <label class="btn-date">همه</label>
+        <label class="btn-designer">تسویه نشده</label>
+        <label class="btn-delivery">تحویل نشده</label>
+    </div>
+    <div class="FormBoxInner" hidden>
+     @*    <div class="margin-top-15 FormDiv col-lg-1-8 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">کارفرما</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">ارسال</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">دسته بندی</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-0-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">سفارش</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-2 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">رسید</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">وضعیت</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-0-75 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">کل</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-0-75 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">دریافتی</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-0-75 col-md-0-5 col-sm-12 col-xs-12">
+            <label style="margin:0px;">پرینت</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-0-75 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">درصد</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">مبلغ</label>
+        </div> *@
+        <div id="Project">
+        <div id="project-partial">
+          
+            <partial name="_ProjectPartial.cshtml" model="Model.Project"> 
+            @* <partial name="~/Views/Shared/_ProjectPartial.cshtml" model="Model.Project.Project" /> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="FormBox">
+    <div class="FormBoxTitle minimize active">
+        <label>پرداخت‌ها</label>
+    </div>
+    <div class="FormBoxInner" hidden>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">تاریخ پرداخت</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">تاریخ پروژه</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">نحوه پرداخت</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-2 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">کارفرما</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">ارسال</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">دسته بندی</label>
+        </div>
+        <div class="margin-top-15 FormDiv col-lg-1-5 col-md-2 col-sm-12 col-xs-12">
+            <label style="margin:0px;">مبلغ</label>
+        </div>
+        <div id="payment-data">
+            <partial name="_PaymentPartial.cshtml" model="Model.Payment">
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div style="border-color:#fff; padding-bottom:30px;" class="Hr margin-top-15"></div>
+        </div>
+        <div id="payment-pagination"></div>
+    </div>
+</div>
+
+<script>
+
+    var projectStatus = null
+
+    $('.btn-date').click(function (e) {
+        e.stopPropagation();
+        $('.btn-delivery, .btn-designer').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = null
+        getProject20(1)
+    });
+
+    $('.btn-delivery').click(function (e) {
+        e.stopPropagation();
+        $('.btn-designer, .btn-date').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = 1
+        getProject20(1)
+    });
+
+    $('.btn-designer').click(function (e) {
+        e.stopPropagation();
+        $('.btn-delivery, .btn-date').css("color", "#a1a6bb");
+        $(this).css("color", "#3a405b");
+        projectStatus = 2
+        getProject20(1)
+    });
+
+    kamaDatepicker('datepicker-from', { markToday: true, markHolidays: true, highlightSelectedDay: true, sync: true });
+    kamaDatepicker('datepicker-to', { markToday: true, markHolidays: true, highlightSelectedDay: true, sync: true });
+
+    function MobileValidation() {
+        var Mobile = $('#PhoneNumber').val();
+        $('#PhoneNumber').css('border-color', '#e4e7ef');
+        $('#phonenumber-label').css('color', '#a1a6bb');
+        $('#phonenumber-label').text('شماره تماس');
+
+        if ((Mobile.length < 10) || (Mobile.substr(0, 1) == "0" && Mobile.length < 11)) {
+            $('#phonenumber').css('border-color', '#fe5339');
+            $('#phonenumber-label').text('شماره تماس را به درستی وارد کنید!');
+            $('#phonenumber-label').css('color', '#fe5339');
+            return false;
+        }
+
+        return true;
+    }
+
+    $('#form').submit(function (e) {
+        e.preventDefault();
+        if (MobileValidation()) {
+            let Id = $('#Id').val();
+            let Name = $('#Name').val();
+            let PhoneNumber = $('#PhoneNumber').val();
+            let Birthday = $('#Birthday').val();
+            let Percent = $('#Percent').val();
+            let Password = $('#Password').val();
+            let IsActive = $('#IsActive').is(':checked');
+            let Description = $('#Description').val();
+            let CardNumber = $('#CardNumber').val();
+            let Priority = $('#Priority').val();
+
+            $.post({
+                data: { Id: Id, Name: Name, PhoneNumber: PhoneNumber, Birthday: Birthday, Percent: Percent, Password: Password, IsActive: IsActive, CardNumber: CardNumber, Description: Description, Priority: Priority },
+                url: '/designer/edit',
+                success: function (result, status, xhr) {
+                    if (result == 1) {
+                        location.href = '/designer';
+                    }
+                    else if (result == 2) {
+                        $('#AlertMessage').css('background-color', '#fe5339');
+                        $('#AlertMessage').html('<p>شماره تماس تکراری می باشد</p>').fadeIn(500).delay(3000).fadeOut(500);
+                    }
+                    else {
+                        $('#AlertMessage').css('background-color', '#fe5339');
+                        $('#AlertMessage').html('<p>خطای پیش بینی نشده</p>').fadeIn(500).delay(3000).fadeOut(500);
+                    }
+                }
+            });
+        }
+    });
+
+    function refresh() {
+        $.get({
+            beforeSend: function (xhr) {
+                $('.Loading').show()
+                $('.OverHide').show()
+            },
+            data: { id: $('#Id').val(), from: $('#datepicker-from').val(), to: $('#datepicker-to').val(), layout: false },
+            url: "/designer/edit",
+            success: function (result, status, xhr) {
+                $('.body-content').html(result);
+                $('.Loading').hide()
+                $('.OverHide').hide()
+            }
+        });
+    }
+
+    $('.minimize').click(function () {
+        $(this).toggleClass('active');
+        if ($(this).parent().has('.project-tab').length) {
+            $('.project-tab').toggle();
+        }
+        $(this).parent().find('.FormBoxInner').toggle();
+    });
+
+    kamaDatepicker('Birthday', { markToday: true, markHolidays: true, highlightSelectedDay: true, sync: true });
+
+
+
+    function getProject20(page) {
+        $.post({
+            beforeSend: function (xhr) {
+                $('.Loading').show()
+                $('.OverHide').show()
+            },
+            data: { id: $('#Id').val(), from: $('#datepicker-from').val(), to: $('#datepicker-to').val(), page: page, status: projectStatus },
+            url: "/designer/project",
+            success: function (result, status, xhr) {
+                $('#project-partial').html(result);
+                $('.Loading').hide()
+                $('.OverHide').hide()
+            }
+        });
+    }
+
+    var paymentPagination = Array.from({ length: @Model.PaymentTotalRow }, (_, i) => i + 1)
+    $('#payment-pagination').pagination({
+        dataSource: paymentPagination,
+        callback: function (data, pagination) {
+            if (pagination.direction != 0) {
+                $.post({
+                    beforeSend: function (xhr) {
+                        $('.Loading').show()
+                        $('.OverHide').show()
+                    },
+                    data: { id: $('#Id').val(), from: $('#datepicker-from').val(), to: $('#datepicker-to').val(), page: pagination.pageNumber },
+                    url: "/designer/payment",
+                    success: function (result, status, xhr) {
+                        $('#payment-data').html(result);
+                        $('.Loading').hide()
+                        $('.OverHide').hide()
+                    }
+                });
+            }
+        }
+    })
+
+</script>

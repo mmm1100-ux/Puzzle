@@ -1,0 +1,127 @@
+﻿@model List<Project>
+
+@{ Layout = null;
+    int i = 0; }
+
+@foreach (var item in Model)
+{
+    i++;
+
+    var anyRender = false;
+
+    if (i == 2)
+    {
+<div id="video-gallery">
+    <a data-video='{"source": [{"src":"/videos/01.mp4", "type":"video/mp4"}], "attributes": {"preload": false, "playsinline": true, "controls": true}}'
+       data-poster="/videos/01.jpg"
+       data-sub-html="">
+        <img src="/videos/01.jpg" />
+    </a>
+</div> }
+
+
+
+
+
+<div data-projectId="@item.Id" class="project-item-box">
+    <div class="project-item-cover">
+         @if (item.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+            (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+            (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
+        {
+            anyRender = true;
+
+<img src="@(item.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).First().Attachment.Bitmap(480))" /> }
+else if (item.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+(x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+(x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).Any())
+{
+<img src="@(item.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).First().Attachment.Bitmap(480))" />
+            }
+else
+{
+<img class="project-list-image" src="/images/159.jpg" />}
+    </div>
+    <div class="project-item-detail">
+        <div class="project-item-title">
+            @(item.Title ?? "بدون نام" )
+            <span>@item.Receipt.ToShamsi().ToString("yyyy/MM/dd")</span>
+        </div>
+        <div class="project-item-balance-box">
+            <div class="project-item-balance">
+                <p>باقی مانده حساب:</p>
+
+                @{ int balance = item.TotalPrice > 0 ? item.TotalPayment - item.TotalPrice : item.TotalPayment - item.Approximate;
+
+                    foreach (var child in item.Child)
+                    {
+                        balance += child.TotalPrice > 0 ? child.TotalPayment - child.TotalPrice : child.TotalPayment - child.Approximate;
+                    } }
+
+                @if (balance != 0)
+                {
+<p>@(Math.Abs(balance * 1000).ToString("N0")) تومان</p> }
+else
+{
+<p>تسویه شده</p>}
+            </div>
+            <div class="project-item-btn-box">
+
+              @*   @if (anyRender)
+                {
+                    <a class="my-repair-add-btn project-item-btn" data-id="@item.Id">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
+                            <path d="M13.5 6.5l4 4"></path>
+                            <path d="M16 19h6"></path>
+                            <path d="M19 16v6"></path>
+                        </svg>
+                    </a>
+                } *@
+
+
+                <a href="/my/projectdetails/@item.Id" class="project-item-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M15 8h.01"></path>
+                        <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z"></path>
+                        <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"></path>
+                        <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"></path>
+                    </svg>
+                </a>
+                <a href="/my/conversation/@item.Id" class="project-item-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M8 9h8"></path>
+                        <path d="M8 13h6"></path>
+                        <path d="M9 18h-3a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-3l-3 3l-3 -3z"></path>
+                    </svg>
+                </a>
+                @{ var badge = item.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                     (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+                     (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.UnreadByCustomer == true).Count(); }
+                <div class="project-item-badge @(badge > 0 ? "has-any" : null)">
+                    <span>@badge</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="project-item-status">
+        <span>وضعیت:</span>
+        @if (item.App || item.Telegram || item.Whatsapp || item.PrintDelivery || item.Rubika || item.Soroush || item.Other || item.Eitaa || item.Flash)
+        {
+<span>تمام شده</span> }
+else if (item.Screenshot)
+{
+<span>در مرحله تایید و رندر گیری</span> }
+else
+{
+<span>در حال طراحی</span>}
+    </div>
+</div>}

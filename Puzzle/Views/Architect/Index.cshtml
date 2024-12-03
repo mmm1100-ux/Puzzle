@@ -1,0 +1,163 @@
+﻿@model ProjectViewModel
+
+@{
+    ViewData["Title"] = "پروژه ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int count = Model.Project.Count();
+    int dayOfWeek = 1;
+
+    int j = 1;
+    if (Model.TotalPage > 10 && Model.Page > 5)
+    {
+        j = Model.Page - 4;
+    }
+    if (Model.TotalPage > 8 && Model.TotalPage - 4 <= Model.Page)
+    {
+        j = Model.Page - 8;
+    }
+    int k = j + 9;
+
+    ViewData["ShowDesigner"] = false;
+    ViewData["ShowName"] = true;
+    ViewData["ShowMobile"] = false;
+    ViewData["ForDesigner"] = true;
+
+    if (ViewBag.ShowCalender == true)
+    {
+        switch (DateTime.Today.AddDays(-Model.Page + 1).DayOfWeek)
+        {
+            case DayOfWeek.Saturday:
+                dayOfWeek = 0;
+                break;
+            case DayOfWeek.Sunday:
+                dayOfWeek = 1;
+                break;
+            case DayOfWeek.Monday:
+                dayOfWeek = 2;
+                break;
+            case DayOfWeek.Tuesday:
+                dayOfWeek = 3;
+                break;
+            case DayOfWeek.Wednesday:
+                dayOfWeek = 4;
+                break;
+            case DayOfWeek.Thursday:
+                dayOfWeek = 5;
+                break;
+            case DayOfWeek.Friday:
+                dayOfWeek = 6;
+                break;
+        }
+    }
+}
+
+<div id="Project">
+    @if (ViewBag.ShowCalender == true)
+    {
+        <div class="puzzle-calender">
+            <div class="project-calender-previous">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l6 6l-6 6" />
+                </svg>
+            </div>
+            <div class="project-calender-day">
+                <ul class="multiple-items">
+                    @for (int a = Model.Page + 28 + dayOfWeek; a > Model.Page - 28 - (7 - dayOfWeek); a--)
+                    {
+                        <li class="@(a == Model.Page ? "PageNumberActive" : null)">
+                            <a href="/architect/project?page=@a">
+                                @DateTime.Today.AddDays(-a + 1).GetDayOfWeek()
+                                @DateTime.Today.AddDays(-a + 1).ToShamsi().Day
+                                @DateTime.Today.AddDays(-a + 1).ToShamsi().MonthName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="project-calender-next">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                </svg>
+            </div>
+        </div>
+    }
+
+    <div class="">
+        <div class="FormBox" style="padding: 0px 20px; padding-bottom: 30px;">
+            @if (ViewBag.SimpleTitle == false)
+            {
+                <div class="FormBoxTitle" style="padding: 0px; margin: 0px -20px;">
+                    <label class="btn-date">پروژه‌ها</label>
+                    <label class="btn-designer">‌تسویه نشده</label>
+                    <label class="btn-delivery">تحویل نشده</label>
+                </div>
+            }
+            else
+            {
+                <div class="FormBoxTitle" style="margin: 0px -20px;">
+                    <label>@ViewBag.FormTitle</label>
+                </div>
+            }
+            <partial name="_ProjectPartial" model="Model.Project" />
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.FormTitle == "تایم‌لاین")
+{
+    <div class="puzzle-pagination" style="float: right;">
+        <div class="pagination-previous">
+            @{
+                string paginationUrl = null;
+                if (Model.Page != 1)
+                {
+                    paginationUrl = "/architect/timeline?page=" + (Model.Page - 1);
+                }
+            }
+
+            <a href="@paginationUrl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l6 6l-6 6" />
+                </svg>
+            </a>
+        </div>
+        <div class="pagination-number">
+            @for (; j < k && j <= Model.TotalPage; j++)
+            {
+                <label class="@(j == Model.Page ? "pagination-number-active" : null)">
+                    <a href="/architect/timeline?page=@j">@j</a>
+                </label>
+
+            }
+        </div>
+        <div class="pagination-next">
+            @{
+                paginationUrl = null;
+                if (Model.Page != Model.TotalPage)
+                {
+                    paginationUrl = "/architect/timeline?page=" + (Model.Page + 1);
+                }
+            }
+            <a href="@paginationUrl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20px" height="20px" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                </svg>
+            </a>
+        </div>
+    </div>
+}
+
+<div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>توضیحات</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <input id="description-id" hidden />
+        <textarea class="popup-textarea"></textarea>
+    </div>
+</div>
