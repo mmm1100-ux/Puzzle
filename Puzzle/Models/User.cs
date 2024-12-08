@@ -27,5 +27,7 @@ namespace Puzzle.Models
         public DateTime? LastActivity { get; set; }
 
         public virtual ICollection<Wage> Wage { get; set; }
+
+        public virtual ICollection<FeedbackForm> FeedbackForms { get; set; }
     }
 }

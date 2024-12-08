@@ -80,5 +80,7 @@ namespace Puzzle.Data
         public DbSet<Firebase> Firebase { get; set; }
 
         public DbSet<ConversationFavorite> ConversationFavorite { get; set; }
+
+        public DbSet<FeedbackForm> FeedbackForms { get; set; }
     }
 }

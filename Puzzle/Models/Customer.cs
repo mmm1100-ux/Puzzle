@@ -48,5 +48,7 @@ namespace Puzzle.Models
         public virtual ICollection<CustomerChat> CustomerChat { get; set; }
 
         public virtual ICollection<Transaction> Transaction { get; set; }
+
+        public virtual ICollection<FeedbackForm> FeedbackForms { get; set; }
     }
 }

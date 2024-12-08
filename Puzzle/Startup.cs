@@ -12,6 +12,7 @@ using Puzzle.Data;
 using Puzzle.Helper;
 using Puzzle.Models;
 using Puzzle.Repository;
+using Puzzle.Repository.Interfaces;
 using Repository;
 using System;
 using System.Linq;
@@ -45,6 +46,15 @@ namespace Puzzle
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<PuzzleDbContext>()
                 .AddDefaultTokenProviders();
+
+            #region DependencyInjections
+
+            //Inject DbContext
+            services.AddScoped<PuzzleDbContext>();
+
+            services.AddScoped<IFeedbackFormRepository, FeedbackRepository>();
+
+            #endregion
 
             services.AddTransient<MediaRepository>();
 
