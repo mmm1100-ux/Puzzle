@@ -1,16 +1,17 @@
 ﻿using Puzzle.Shared;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Puzzle.Models
+namespace Puzzle.ViewModels.Feedbacks
 {
-    public class FeedbackForm : BaseEntity<int>
+    public class FeedbackFormViewModel : BaseViewModel<int>
     {
-        [Required]
         public string DesignerId { get; set; }
 
-        [Range(1, int.MaxValue)]
+        public string DesignerName { get; set; }
+
         public int CustomerId { get; set; }
+
+        public string CustomerName { get; set; }
 
         public string? Description { get; set; }
 
@@ -32,14 +33,5 @@ namespace Puzzle.Models
         [Range(1, 5)]
         public int? AppropriateTreatmentOfManagementAndOfficeWorkersVote { get; set; }
 
-        #region Relations
-
-        [ForeignKey(nameof(DesignerId))]
-        public virtual User Designer { get; set; }
-
-        [ForeignKey(nameof(CustomerId))]
-        public virtual Customer Customer { get; set; }
-
-        #endregion
     }
 }

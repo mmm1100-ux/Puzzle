@@ -8,6 +8,12 @@ namespace Puzzle.Repository.Interfaces
     {
         IQueryable<FeedbackForm> Query();
 
+        //Add
+        Task AddAsync(FeedbackForm feedbackForm);
+
+        //Update
+        void UpdateAsync(FeedbackForm feedbackForm);
+
         //SaveChanges
         Task SaveChangesAsync();
     }

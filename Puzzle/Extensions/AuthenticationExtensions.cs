@@ -25,5 +25,10 @@ namespace Extensions
 
             return db.Users.Where(x => x.Id == Claim.GetUserId()).First();
         }
+
+        public static bool IsAdmin(this ClaimsPrincipal Claim)
+        {
+            return Claim.IsInRole("Admin");
+        }
     }
 }

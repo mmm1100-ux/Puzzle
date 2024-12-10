@@ -21,6 +21,16 @@ namespace Puzzle.Repository
             return _db.FeedbackForms.AsQueryable();
         }
 
+        public async Task AddAsync(FeedbackForm feedbackForm)
+        {
+            await _db.FeedbackForms.AddAsync(feedbackForm);
+        }
+
+        public void UpdateAsync(FeedbackForm feedbackForm)
+        {
+            _db.FeedbackForms.Update(feedbackForm);            
+        }
+
         public async Task SaveChangesAsync()
         {
             await _db.SaveChangesAsync();

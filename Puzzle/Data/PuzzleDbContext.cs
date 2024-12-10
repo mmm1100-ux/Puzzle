@@ -34,6 +34,12 @@ namespace Puzzle.Data
             builder.Entity<Customer>().HasIndex(c => c.Mobile).IsUnique();
             builder.Entity<Rating>().HasIndex(c => new { c.DateTime, c.CustomerId }).IsUnique();
 
+            #region QueryFilters
+
+            builder.Entity<FeedbackForm>().HasQueryFilter(x => !x.IsDeleted);
+
+            #endregion
+
             base.OnModelCreating(builder);
         }
 
