@@ -56,7 +56,7 @@ namespace Puzzle.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Home",);
+            return RedirectToAction("Index", "Home");
         }
 
     }
