@@ -61,4 +61,3 @@ namespace Puzzle.Controllers
             return RedirectToAction(nameof(Filter), new FilterFeedbackFormViewModel());
         }
     }
-}

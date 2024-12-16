@@ -13,6 +13,8 @@ using Puzzle.Helper;
 using Puzzle.Models;
 using Puzzle.Repository;
 using Puzzle.Repository.Interfaces;
+using Puzzle.Services.Implementations;
+using Puzzle.Services.Interfaces;
 using Repository;
 using System;
 using System.Linq;
@@ -53,6 +55,8 @@ namespace Puzzle
             services.AddScoped<PuzzleDbContext>();
 
             services.AddScoped<IFeedbackFormRepository, FeedbackRepository>();
+            services.AddScoped<IFeedbackFormService, FeedbackFormService>();
+            services.AddScoped<ILookupService, LookupService>();
 
             #endregion
 

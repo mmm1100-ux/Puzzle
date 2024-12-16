@@ -25,7 +25,7 @@ namespace Puzzle.Controllers
 
         #endregion
 
-        [HttpGet]
+        [HttpGet("[action]/{designerId}")]
         public IActionResult Create(string designerId)
         {
             if (string.IsNullOrEmpty(designerId))
@@ -41,7 +41,7 @@ namespace Puzzle.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Create(UpsertFeedbackFormViewModel model)
         {
             if (!ModelState.IsValid)

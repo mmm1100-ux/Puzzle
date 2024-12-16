@@ -11,4 +11,5 @@ namespace ViewModels
         public OrderBy OrderBy { get; set; }
         public bool Asc { get; set; }
     }
+
 }
