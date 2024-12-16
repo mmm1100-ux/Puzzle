@@ -31,7 +31,7 @@ namespace Puzzle.Services.Implementations
 
         #endregion
 
-        public async Task<Result<FilterFeedbackFormViewModel>> GetAllAsync(FilterFeedbackFormViewModel model)
+        public async Task<Result<FilterFeedbackFormViewModel>> Filter(FilterFeedbackFormViewModel model)
         {
             if (model is null)
             {
