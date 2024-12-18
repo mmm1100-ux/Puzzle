@@ -17,11 +17,12 @@ namespace Puzzle.Mapper
                 Vote = model.Vote,
                 DesignQualityVote = model.DesignQualityVote,
                 ComplianceOfTheOrderWithTheDesignVote = model.ComplianceOfTheOrderWithTheDesignVote,
+                DeliveryTimeVote = model.DeliveryTimeVote,
                 AppropriateApproachOfTheDesignerVote = model.AppropriateApproachOfTheDesignerVote,
                 PriceVote = model.PriceVote,
                 AppropriateTreatmentOfManagementAndOfficeWorkersVote = model.AppropriateTreatmentOfManagementAndOfficeWorkersVote,
-                CustomerName = $"{model.Customer?.FirstName} {model.Customer?.LastName}" ?? model.Customer?.Phone,
-                DesignerName = model.Designer?.Name,
+                CustomerName = $"{model.Customer?.FirstName} {model.Customer?.LastName}" ?? model.Customer?.Phone ?? "-",
+                DesignerName = model.Designer?.Name ?? "-",
             };
         }
 
@@ -36,6 +37,7 @@ namespace Puzzle.Mapper
                 Vote = model.Vote,
                 DesignQualityVote = model.DesignQualityVote,
                 ComplianceOfTheOrderWithTheDesignVote = model.ComplianceOfTheOrderWithTheDesignVote,
+                DeliveryTimeVote = model.DeliveryTimeVote,
                 AppropriateApproachOfTheDesignerVote = model.AppropriateApproachOfTheDesignerVote,
                 PriceVote = model.PriceVote,
                 AppropriateTreatmentOfManagementAndOfficeWorkersVote = model.AppropriateTreatmentOfManagementAndOfficeWorkersVote

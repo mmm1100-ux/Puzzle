@@ -1,0 +1,23 @@
+﻿@using Puzzle.ViewModels.Feedbacks
+@model FilterFeedbackFormViewModel
+
+<div id="project-data">
+    <partial name="~/Views/Shared/_FeedbackFormPartial.cshtml" model="Model.Entities" />
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div style="border-color:#fff; padding-bottom:30px;" class="Hr margin-top-15"></div>
+</div>
+<div id="project-pagination"></div>
+
+<script>
+    var projectPagination = Array.from({ length: @Model.AllEntitiesCount }, (_, i) => i + 1)
+    $('#project-pagination').pagination({
+        dataSource: projectPagination,
+        pageNumber: @Model.Page,
+        callback: function (data, pagination) {
+            if (pagination.direction != 0) {
+                getFeedbackForms(pagination.pageNumber)
+            }
+        }
+    })
+</script>

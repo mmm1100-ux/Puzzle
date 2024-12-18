@@ -1,0 +1,114 @@
+﻿@using Puzzle.ViewModels.Feedbacks
+@model FilterFeedbackFormViewModel
+
+@{
+    ViewData["Title"] = "نظرسنجی ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int count = Model.AllEntitiesCount;
+    int dayOfWeek = 1;
+
+    int j = 1;
+    if (Model.PageCount > 10 && Model.Page > 5)
+    {
+        j = Model.Page - 4;
+    }
+    if (Model.PageCount > 8 && Model.PageCount - 4 <= Model.Page)
+    {
+        j = Model.Page - 8;
+    }
+    int k = j + 9;
+
+    if (ViewBag.ShowCalender == true)
+    {
+        switch (DateTime.Today.AddDays(-Model.Page + 1).DayOfWeek)
+        {
+            case DayOfWeek.Saturday:
+                dayOfWeek = 0;
+                break;
+            case DayOfWeek.Sunday:
+                dayOfWeek = 1;
+                break;
+            case DayOfWeek.Monday:
+                dayOfWeek = 2;
+                break;
+            case DayOfWeek.Tuesday:
+                dayOfWeek = 3;
+                break;
+            case DayOfWeek.Wednesday:
+                dayOfWeek = 4;
+                break;
+            case DayOfWeek.Thursday:
+                dayOfWeek = 5;
+                break;
+            case DayOfWeek.Friday:
+                dayOfWeek = 6;
+                break;
+        }
+    }
+}
+
+<div id="Project">
+    <div class="">
+        <div class="FormBox" style="padding: 0px 20px; padding-bottom: 30px;">
+            @if (ViewBag.SimpleTitle == false)
+            {
+                <div class="FormBoxTitle" style="padding: 0px; margin: 0px -20px;">
+                    <label class="btn-date">پروژه‌ها</label>
+                    <label class="btn-designer">‌تسویه نشده</label>
+                    <label class="btn-delivery">تحویل نشده</label>
+                </div>
+            }
+            else
+            {
+                <div class="FormBoxTitle" style="margin: 0px -20px;">
+                    <label>@ViewBag.FormTitle</label>
+                </div>
+            }
+            <partial name="_FeedbackFormPartial" model="Model" />
+        </div>
+    </div>
+</div>
+
+<div class="pop-up col-lg-3 col-md-4 col-sm-6 col-xs-8 col-lg-pull-4-5 col-md-pull-4 col-sm-pull-3 col-xs-pull-2">
+    <div class="FormBoxTitle">
+        <label>توضیحات</label>
+    </div>
+    <div class="FormBoxInner" style="padding: 40px">
+        <input id="description-id" hidden />
+        <textarea class="popup-textarea"></textarea>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        function getFeedbackForms(page) {
+            $.get({
+                beforeSend: function (xhr) {
+                    $('.Loading').show();
+                    $('.OverHide').show();
+                },
+                data: { page: page },
+                url: "/AdminSideFeedbackForms/Filter",
+                success: function (result, status, xhr) {
+                    // Create a temporary container to manipulate the result HTML
+                    var tempContainer = $('<div>').html(result);
+
+                    // Remove all .TopMenu elements from the result before updating the UI
+                    tempContainer.find('.TopMenu').remove();
+
+                    // Update the UI with the modified result
+                    $('#Project').html(tempContainer.html());
+                    $('.Loading').hide();
+                    $('.OverHide').hide();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred while fetching feedback forms:", error);
+                    $('.Loading').hide();
+                    $('.OverHide').hide();
+                }
+            });
+        }
+    </script>
+}

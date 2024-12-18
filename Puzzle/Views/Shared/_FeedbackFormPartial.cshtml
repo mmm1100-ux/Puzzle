@@ -1,0 +1,84 @@
+﻿@using Puzzle.ViewModels.Feedbacks
+@model List<FeedbackFormViewModel>
+
+@{
+    int count = Model.Count;
+    int counter = 1;
+}
+
+<table>
+    <thead>
+        <tr>
+            <th style="width: 52px;">#</th>
+            <th style="width: 100px; min-width: 100px;">نام طراح</th>
+            <th style="width: 100px; min-width: 100px;">نام کاربر</th>
+            <th style="width: 100px;">امتیاز</th>
+            <th style="width: 100px;">کیفیت طراحی</th>
+            <th style="width: 100px;">انطباق سفارش با طراحی</th>
+            <th style="width: 100px;">زمان تحویل</th>
+            <th style="width: 100px;">برخورد مناسب طراح</th>
+            <th style="width: 100px;">قیمت</th>
+            <th style="width: 100px;">برخورد مناسب مدیریت و عوامل دفتری</th>
+            <th>توضیحات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="li-project">
+                <td>
+                    @(counter++)
+                </td>
+                <td>
+
+                    @item.DesignerName
+
+                </td>
+                <td>
+
+                    @item.CustomerName
+
+                </td>
+                <td>
+
+                    @item.Vote
+
+                </td>
+                <td>
+
+                    @item.DesignQualityVote
+
+                </td>
+                <td>
+
+                    @item.ComplianceOfTheOrderWithTheDesignVote
+
+                </td>
+                <td>
+
+                    @item.DeliveryTimeVote
+
+                </td>
+                <td>
+
+                    @item.AppropriateApproachOfTheDesignerVote
+
+                </td>
+                <td>
+
+                    @item.PriceVote
+
+                </td>
+                <td>
+
+                    @item.AppropriateTreatmentOfManagementAndOfficeWorkersVote
+
+                </td>
+                <td>
+                    <span data-description-id="@item.Id" data-description="@item.Description" class="open-description @(!string.IsNullOrWhiteSpace(item.Description) ? "btn-print-active" : "btn-print")">D</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

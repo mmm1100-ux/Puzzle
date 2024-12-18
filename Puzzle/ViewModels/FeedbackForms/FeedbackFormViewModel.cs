@@ -23,6 +23,9 @@ namespace Puzzle.ViewModels.Feedbacks
 
         [Range(1, 5)]
         public int? ComplianceOfTheOrderWithTheDesignVote { get; set; }
+        
+        [Range(1, 5)]
+        public int? DeliveryTimeVote { get; set; }
 
         [Range(1, 5)]
         public int? AppropriateApproachOfTheDesignerVote { get; set; }

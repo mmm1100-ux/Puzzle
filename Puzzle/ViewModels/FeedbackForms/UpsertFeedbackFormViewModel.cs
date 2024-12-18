@@ -26,7 +26,11 @@ namespace Puzzle.ViewModels.Feedbacks
 
         [Display(Name = "تطابق سفارش با طراحی")]
         [Range(1, 5, ErrorMessage = "{0} باید بین {1} و {2} باشد")]
-        public int? ComplianceOfTheOrderWithTheDesignVote { get; set; }
+        public int? ComplianceOfTheOrderWithTheDesignVote { get; set; } 
+        
+        [Display(Name = "زمان تحویل")]
+        [Range(1, 5, ErrorMessage = "{0} باید بین {1} و {2} باشد")]
+        public int? DeliveryTimeVote { get; set; }
 
         [Display(Name = "رفتار مناسب طراح")]
         [Range(1, 5, ErrorMessage = "{0} باید بین {1} و {2} باشد")]

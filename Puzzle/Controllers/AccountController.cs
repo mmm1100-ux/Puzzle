@@ -61,7 +61,7 @@ namespace Controllers
             {
                 var db = new PuzzleDbContext();
 
-                model.UserName = "0" + model.UserName.Substring(model.UserName.Length - 10, 10);
+                //model.UserName = "0" + model.UserName.Substring(model.UserName.Length - 10, 10);
 
                 var isExist = db.Users.Where(x => x.UserName == model.UserName).Where(x => x.IsActive).Any();
 

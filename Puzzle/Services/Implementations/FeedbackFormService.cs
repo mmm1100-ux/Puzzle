@@ -38,7 +38,11 @@ namespace Puzzle.Services.Implementations
                 return Result.Failure<FilterFeedbackFormViewModel>(message: "پارامتر های ورودی نمی تواند خالی باشد");
             }
 
-            var query = _feedbackFormRepository.Query();
+            var query = _feedbackFormRepository
+                .Query()
+                .Include(a => a.Customer)
+                .Include(a => a.Designer)
+                .AsQueryable();
 
             #region Conditions
 

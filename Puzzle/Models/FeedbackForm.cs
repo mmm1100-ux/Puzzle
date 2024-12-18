@@ -21,7 +21,10 @@ namespace Puzzle.Models
         public int? DesignQualityVote { get; set; }
 
         [Range(1, 5)]
-        public int? ComplianceOfTheOrderWithTheDesignVote { get; set; }
+        public int? ComplianceOfTheOrderWithTheDesignVote { get; set; } 
+        
+        [Range(1, 5)]
+        public int? DeliveryTimeVote { get; set; }
 
         [Range(1, 5)]
         public int? AppropriateApproachOfTheDesignerVote { get; set; }

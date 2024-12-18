@@ -40,6 +40,9 @@ namespace Puzzle.Controllers
                 return BadRequest();
             }
 
+            ViewData["FormTitle"] = "نظرسنجی ها";
+            ViewData["ShowCalender"] = false;
+
             return View(model);
         }
 
