@@ -13,3 +13,6 @@ Puzzle/Properties/PublishProfiles/FolderProfile1.pubxml.user
 .vs/
 /Puzzle/Migrations
 Puzzle/Migrations
+/Migrations
+/Migrations/
+
