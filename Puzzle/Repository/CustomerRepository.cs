@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Puzzle.Data;
@@ -20,7 +21,7 @@ namespace Repository
             ratingRepository = new RatingRepository();
         }
 
-        public CustomerListViewModel ToList(int Page, OrderBy OrderBy, bool Asc, int Count, string keyword, string designerId = null)
+        public CustomerListViewModel ToList(int Page, OrderBy OrderBy, bool Asc, int Count, string keyword, string designerId = null, bool? isHaveFirstNameOrLastName = null)
         {
             var M = new CustomerListViewModel()
             {
@@ -37,6 +38,11 @@ namespace Repository
                 .Where(x => keyword == null || x.Mobile.Contains(keyword) || x.LastName.Contains(keyword) || x.FirstName.Contains(keyword) ||
                             (x.FirstName + " " + x.LastName).Contains(keyword) || (x.LastName + " " + x.FirstName).Contains(keyword) ||
                             x.Social.Contains(keyword) || x.Address.Contains(keyword) || x.Phone.Contains(keyword));
+
+            if (isHaveFirstNameOrLastName.HasValue && isHaveFirstNameOrLastName.Value == true)
+            {
+                query = query.Where(a => !string.IsNullOrEmpty(a.FirstName) || !string.IsNullOrEmpty(a.LastName));
+            }
 
             if (OrderBy == OrderBy.Alphabet)
             {

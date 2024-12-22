@@ -83,13 +83,13 @@
 @section Scripts {
 
     <script>
-        function getFeedbackForms(page) {
+        function getFeedbackForms(page, designerId = null, customerId = null) {
             $.get({
                 beforeSend: function (xhr) {
                     $('.Loading').show();
                     $('.OverHide').show();
                 },
-                data: { page: page },
+                data: { page: page, DesignerId: designerId, CustomerId: customerId },
                 url: "/AdminSideFeedbackForms/Filter",
                 success: function (result, status, xhr) {
                     // Create a temporary container to manipulate the result HTML
@@ -110,5 +110,21 @@
                 }
             });
         }
+
+        var desigerIdVal = null;
+        var customerIdVal = null;
+
+        const designerElement = document.querySelector('.search-designer-custom');
+        designerElement.addEventListener('change', function (event) {
+            desigerIdVal = event.target.value;
+            getFeedbackForms(1, desigerIdVal, customerIdVal);
+        });
+
+        const customerElement = document.querySelector('.search-customer');
+        customerElement.addEventListener('change', function (event) {
+            customerIdVal = event.target.value;
+            getFeedbackForms(1, desigerIdVal, customerIdVal);
+        });
+
     </script>
 }

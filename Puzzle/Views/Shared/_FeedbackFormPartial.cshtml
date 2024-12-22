@@ -1,8 +1,8 @@
 ﻿@using Puzzle.ViewModels.Feedbacks
-@model List<FeedbackFormViewModel>
+@model FilterFeedbackFormViewModel
 
 @{
-    int count = Model.Count;
+    int count = Model.Entities.Count;
     int counter = 1;
 }
 
@@ -10,8 +10,30 @@
     <thead>
         <tr>
             <th style="width: 52px;">#</th>
-            <th style="width: 100px; min-width: 100px;">نام طراح</th>
-            <th style="width: 100px; min-width: 100px;">نام کاربر</th>
+            <th style="padding-right: 5px; padding-left: 5px;">
+                <select class="search-designer-custom" asp-for="DesignerId">
+                    <option value="">طراحان</option>
+                    @foreach (var item in (ViewBag.Designer as List<UserViewModel>).OrderBy(c => c.Priority))
+                    {
+                        <option value="@item.Id">
+                            @string.Join(" ", item.Name.Split(" ").Skip(1))
+                        </option>
+                    }
+                </select>
+            </th>
+            <th style="padding-right: 5px; padding-left: 5px;">
+                <select class="search-customer" asp-for="DesignerId">
+                    <option value="">کاربران</option>
+                    @foreach (var item in (ViewBag.CustomerList as List<CustomerViewModel>).OrderBy(c => c.FirstName).ThenBy(a => a.LastName))
+                    {
+                        <option value="@item.Id">
+                            @string.Join(" ", item.FirstName, item.LastName)
+                        </option>
+                    }
+                </select>
+            </th>
+            @* <th style="width: 100px; min-width: 100px;">نام طراح</th> *@
+            @* <th style="width: 100px; min-width: 100px;">نام کاربر</th> *@
             <th style="width: 100px;">امتیاز</th>
             <th style="width: 100px;">کیفیت طراحی</th>
             <th style="width: 100px;">انطباق سفارش با طراحی</th>
@@ -23,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Entities)
         {
             <tr class="li-project">
                 <td>
