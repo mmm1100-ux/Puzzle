@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Puzzle.Controllers
 {
     [Route("[controller]/")]
-    [Authorize]
+    //[Authorize]
     public class FeedbackFormsController : Controller
     {
         #region Fields

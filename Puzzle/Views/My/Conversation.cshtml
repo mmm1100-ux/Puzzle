@@ -456,6 +456,8 @@
 
 
 <script>
+    console.log("hiiiii");
+
     document.getElementById("openModalButton").addEventListener("click", function () {
         const designerId = this.getAttribute("data-designer-id");
 
@@ -475,7 +477,13 @@
                     modal.style.display = 'none';
                     overlay.style.display = 'none';
                 });
+
+                submitSurveyFunc();
             })
             .catch(error => console.error('Error loading modal:', error));
     });
 </script>
+
+@section Scripts{
+    <script src="/js/feedbackForms.js"></script>
+}

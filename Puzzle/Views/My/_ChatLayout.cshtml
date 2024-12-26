@@ -80,29 +80,31 @@
                 <div class="header-pic-box">
                     <div class="header-pic-alt">
                         @if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
-                               (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
-                               (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
+                        (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+                        (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
                         {
-            <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                            <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                 (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
-                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).First().Attachment.Bitmap(480))" /> }
-        else if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).First().Attachment.Bitmap(480))" />
+                        }
+                        else if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                         (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
                         (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).Any())
-        {
-<img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                        {
+                            <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                 (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
                 (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).First().Attachment.Bitmap(480))" />
                         }
-else
-{
-<img src="/images/159.jpg" />}
+                        else
+                        {
+                            <img src="/images/159.jpg" />
+                        }
                     </div>
                     <span class="header-pic-badge"></span>
                 </div>
 
                 <div class="header-name">
-                    <p>@(Model.Title ?? "بدون نام" )</p>
+                    <p>@(Model.Title ?? "بدون نام")</p>
                     <p>@Model.ProjectCategory.GetDescription()</p>
                 </div>
             </div>
@@ -234,25 +236,27 @@ else
             <div class="project-details-side-title">
                 <div class="">
                     @if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
-                              (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
-                              (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
+                    (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
+                    (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).Any())
                     {
-        <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                        <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                 (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
                 (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Render).First().Attachment.Bitmap(480))" />
                     }
-    else if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                    else if (Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                     (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
                     (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).Any())
-    {
-<img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
+                    {
+                        <img src="@(Model.Conversation.Where(x => x.IsDelete == false && (x.Accepted == true ||
                 (x.Type == Enums.Enum.MediaType.Render && (x.Project.App || x.Project.Whatsapp || x.Project.Telegram || x.Project.PrintDelivery || x.Project.Eitaa || x.Project.Soroush || x.Project.Rubika || x.Project.Other || x.Project.Flash)) ||
-                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).First().Attachment.Bitmap(480))" /> }
-else
-{
-<img src="/images/159.jpg" />}
+                (x.Type == Enums.Enum.MediaType.Screen && x.Project.Screenshot))).Where(x => x.Type == Enums.Enum.MediaType.Screen).First().Attachment.Bitmap(480))" />
+                    }
+                    else
+                    {
+                        <img src="/images/159.jpg" />
+                    }
                 </div>
-                <h4>@(Model.Title ?? "بدون نام" )</h4>
+                <h4>@(Model.Title ?? "بدون نام")</h4>
                 <span>@Model.ProjectCategory.GetDescription()</span>
             </div>
         </div>
@@ -276,24 +280,28 @@ else
                 <div>
                     <span>هزینه</span>
                     <span>
-                        @{ int price = Model.TotalPrice > 0 ? Model.TotalPrice : Model.Approximate;
+                        @{
+                            int price = Model.TotalPrice > 0 ? Model.TotalPrice : Model.Approximate;
 
                             foreach (var child in Model.Child)
                             {
                                 price += child.TotalPrice > 0 ? child.TotalPrice : child.Approximate;
-                            } }
+                            }
+                        }
                         <span class="price">@((price * 1000).ToString("N0"))</span> تومان
                     </span>
                 </div>
                 <div>
                     <span>پرداخت</span>
                     <span>
-                        @{ int payment = Model.Payment.Select(x => x.Price).Sum();
+                        @{
+                            int payment = Model.Payment.Select(x => x.Price).Sum();
 
                             foreach (var child in Model.Child)
                             {
                                 payment += child.Payment.Select(x => x.Price).Sum();
-                            } }
+                            }
+                        }
                         <span class="payment">@((payment * 1000).ToString("N0"))</span> تومان
                     </span>
                 </div>
@@ -323,14 +331,14 @@ else
         </div>
     </div>
 
-        <script type="module">
+    <script type="module">
         // This will append pwaupdate component, which will register your pwabuilder-sw.js file as the service worker.
         import '/pwaupdate.js';
         const el = document.createElement('pwa-update');
         document.body.appendChild(el);
     </script>
 
-       <script src="/lib/firebase-app.js"></script>
+    <script src="/lib/firebase-app.js"></script>
     <script src="/lib/firebase-firestore.js"></script>
     <script src="/lib/firebase-messaging.js"></script>
 
@@ -350,6 +358,7 @@ else
         const messaging = firebase.messaging();
     </script>
 
+    @RenderSection("Scripts", false);
     <script src="~/js/app.js" asp-append-version="true"></script>
 </body>
 </html>
