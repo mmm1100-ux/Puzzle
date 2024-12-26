@@ -1,0 +1,248 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    /* استایل کلی برای مودال */
+    .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1000;
+    }
+
+    .custom-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 500px;
+        background-color: #282a37;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        display: none;
+        z-index: 1001;
+        color: #fff;
+    }
+
+        .custom-modal h5 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .custom-modal .question {
+            margin-bottom: 15px;
+        }
+
+        .custom-modal label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .custom-modal input[type="text"],
+        .custom-modal input[type="number"],
+        .custom-modal textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .custom-modal .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+            .custom-modal .star-rating input {
+                display: none;
+            }
+
+            .custom-modal .star-rating label {
+                font-size: 30px;
+                color: #ccc;
+                cursor: pointer;
+                transition: color 0.3s ease;
+            }
+
+                .custom-modal .star-rating input:checked ~ label,
+                .custom-modal .star-rating label:hover,
+                .custom-modal .star-rating label:hover ~ label {
+                    color: #ffc107;
+                }
+
+        .custom-modal button {
+            display: inline-block;
+            width: calc(50% - 10px);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            .custom-modal button:first-child {
+                background-color: #28a745;
+                color: #fff;
+                margin-right: 10px;
+            }
+
+            .custom-modal button:last-child {
+                background-color: #dc3545;
+                color: #fff;
+            }
+</style>
+
+<div class="custom-modal-overlay" id="modalOverlay"></div>
+<div class="custom-modal" id="customModal">
+    <h5>نظرسنجی</h5>
+    <form id="feedbackForm">
+        <div class="question">
+            <label for="designerId">شناسه طراح:</label>
+            <input type="text" id="designerId" name="DesignerId" value="@Model.DesignerId" readonly />
+        </div>
+        <div class="question">
+            <label for="customerId">شناسه مشتری:</label>
+            <input type="number" id="customerId" name="CustomerId" placeholder="شناسه مشتری را وارد کنید..." />
+        </div>
+        <div class="question">
+            <label for="description">توضیحات:</label>
+            <textarea id="description" name="Description" placeholder="نظر خود را بنویسید..."></textarea>
+        </div>
+
+        <!-- بخش امتیازدهی کلی -->
+        <div class="question">
+            <label>امتیاز شما:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="vote-@i" name="Vote" value="@i" />
+                    <label for="vote-@i">★</label>
+                }
+            </div>
+        </div>
+
+        <!-- بخش امتیازدهی‌های جداگانه -->
+        <div class="question">
+            <label>کیفیت طراحی:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="designQuality-@i" name="DesignQualityVote" value="@i" />
+                    <label for="designQuality-@i">★</label>
+                }
+            </div>
+        </div>
+        <div class="question">
+            <label>تطابق سفارش با طراحی:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="compliance-@i" name="ComplianceOfTheOrderWithTheDesignVote" value="@i" />
+                    <label for="compliance-@i">★</label>
+                }
+            </div>
+        </div>
+        <div class="question">
+            <label>زمان تحویل:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="delivery-@i" name="DeliveryTimeVote" value="@i" />
+                    <label for="delivery-@i">★</label>
+                }
+            </div>
+        </div>
+        <div class="question">
+            <label>رفتار مناسب طراح:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="designerBehavior-@i" name="AppropriateApproachOfTheDesignerVote" value="@i" />
+                    <label for="designerBehavior-@i">★</label>
+                }
+            </div>
+        </div>
+        <div class="question">
+            <label>قیمت:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="price-@i" name="PriceVote" value="@i" />
+                    <label for="price-@i">★</label>
+                }
+            </div>
+        </div>
+        <div class="question">
+            <label>رفتار مناسب مدیران و کارمندان:</label>
+            <div class="star-rating">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    <input type="radio" id="managementBehavior-@i" name="AppropriateTreatmentOfManagementAndOfficeWorkersVote" value="@i" />
+                    <label for="managementBehavior-@i">★</label>
+                }
+            </div>
+        </div>
+
+        <button type="button" id="submitSurvey">ثبت نظرسنجی</button>
+        <button type="button" id="closeModal">بستن</button>
+    </form>
+</div>
+
+
+<script>
+    document.getElementById("openModalButton").addEventListener("click", function () {
+        const designerId = this.getAttribute("data-designer-id");
+
+        fetch(`/FeedbackForms/LoadModalContent?designerId=${designerId}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("modalContainer").innerHTML = html;
+                const modal = document.getElementById('customModal');
+                const overlay = document.getElementById('modalOverlay');
+
+                modal.style.display = 'block';
+                overlay.style.display = 'block';
+
+                // بستن مودال
+                document.getElementById('closeModal').addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    overlay.style.display = 'none';
+                });
+
+                // ارسال فرم به صورت AJAX
+                document.getElementById('submitSurvey').addEventListener('click', function () {
+                    const form = document.getElementById('feedbackForm');
+                    const formData = new FormData(form);
+
+                    fetch('/FeedbackForms/Create', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('نظرسنجی با موفقیت ثبت شد!');
+                                modal.style.display = 'none';
+                                overlay.style.display = 'none';
+                            } else {
+                                return response.text().then(text => {
+                                    alert('خطایی رخ داده است: ' + text);
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error submitting feedback:', error);
+                            alert('خطایی رخ داده است. لطفاً دوباره تلاش کنید.');
+                        });
+                });
+            })
+            .catch(error => console.error('Error loading modal:', error));
+    });
+</script>

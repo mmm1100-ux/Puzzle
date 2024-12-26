@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Puzzle.Controllers
 {
     [Route("[controller]/")]
-    [Authorize]
+    //[Authorize]
     public class FeedbackFormsController : Controller
     {
         #region Fields
@@ -58,6 +58,25 @@ namespace Puzzle.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+
+        [HttpGet("/FeedbackForms/LoadModalContent")]
+        public IActionResult LoadModalContent(string designerId)
+        {
+            if (string.IsNullOrEmpty(designerId))
+            {
+                return BadRequest("DesignerId is required.");
+            }
+
+            var model = new UpsertFeedbackFormViewModel
+            {
+                DesignerId = designerId
+            };
+
+            // بازگرداندن یک PartialView که محتوای مودال را رندر می‌کند
+            return PartialView("Create", model);
+        }
+
 
     }
 }
