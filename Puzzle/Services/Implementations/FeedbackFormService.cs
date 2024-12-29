@@ -103,9 +103,6 @@ namespace Puzzle.Services.Implementations
 
             try
             {
-                var customerId = _httpContextAccessor.HttpContext.User.GetUserId();
-                model.CustomerId = int.Parse(customerId);
-
                 var feedbackForm = model.ToModel();
 
                 await _feedbackFormRepository.AddAsync(feedbackForm);

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Puzzle.Services.Interfaces;
 using Puzzle.ViewModels.Feedbacks;
+using System.Data.Odbc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Puzzle.Controllers
@@ -42,21 +44,28 @@ namespace Puzzle.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Create(UpsertFeedbackFormViewModel model)
+        public async Task<IActionResult> Create([FromBody] UpsertFeedbackFormViewModel model)
         {
+            model.DesignerId = "108ceaaf-84e6-439a-baf9-dbac522f570c";
+
             if (!ModelState.IsValid)
             {
-                return View(model);
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return BadRequest(string.Join(", ", errors)); // Return validation errors as a response
             }
 
             var result = await _feedbackFormService.CreateAsync(model);
 
             if (result.IsFailure)
             {
-                return View(model);
+                return BadRequest(result.Message);
             }
 
-            return RedirectToAction("Index", "Home");
+            return Ok(result.Message);
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 using Puzzle.Models;
 using Puzzle.ViewModels.Feedbacks;
+using System;
 
 namespace Puzzle.Mapper
 {
@@ -40,7 +41,9 @@ namespace Puzzle.Mapper
                 DeliveryTimeVote = model.DeliveryTimeVote,
                 AppropriateApproachOfTheDesignerVote = model.AppropriateApproachOfTheDesignerVote,
                 PriceVote = model.PriceVote,
-                AppropriateTreatmentOfManagementAndOfficeWorkersVote = model.AppropriateTreatmentOfManagementAndOfficeWorkersVote
+                AppropriateTreatmentOfManagementAndOfficeWorkersVote = model.AppropriateTreatmentOfManagementAndOfficeWorkersVote,
+                CreatedAt=DateTime.Now,
+                UpdatedAt=DateTime.Now
             };
         }
     }
