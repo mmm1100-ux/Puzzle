@@ -77,6 +77,8 @@ namespace Controllers
                 .Include(x => x.Child).ThenInclude(x => x.Payment)
                 .First();
 
+            ViewData["DesignerId"] = project.DesignerId;
+
             var conversation = project.Conversation
                 .Where(x => x.IsDelete == false)
                 //.Where(x => x.UserId == null || x.Accepted == true ||

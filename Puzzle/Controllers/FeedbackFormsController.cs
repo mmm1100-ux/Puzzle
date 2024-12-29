@@ -46,8 +46,6 @@ namespace Puzzle.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Create([FromBody] UpsertFeedbackFormViewModel model)
         {
-            model.DesignerId = "108ceaaf-84e6-439a-baf9-dbac522f570c";
-
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values
@@ -70,7 +68,7 @@ namespace Puzzle.Controllers
 
 
         [HttpGet("/FeedbackForms/LoadModalContent")]
-        public IActionResult LoadModalContent(string designerId)
+        public IActionResult LoadModalContent(string designerId, int customerId)
         {
             if (string.IsNullOrEmpty(designerId))
             {
@@ -79,7 +77,8 @@ namespace Puzzle.Controllers
 
             var model = new UpsertFeedbackFormViewModel
             {
-                DesignerId = designerId
+                DesignerId = designerId,
+                CustomerId=customerId,
             };
 
             // بازگرداندن یک PartialView که محتوای مودال را رندر می‌کند

@@ -1,5 +1,5 @@
-﻿@model Project
-
+﻿@using Puzzle.Data
+@model Project
 @{
     Layout = "_ChatLayout.cshtml";
     ViewData["Title"] = Model.Title;
@@ -14,6 +14,8 @@
         .Where(x => x.Type == Enums.Enum.MediaType.Render)
         .Where(x => x.IsDelete == false)
         .Any();
+
+    var designerId =Model.DesignerId;
 
     foreach (var item in Model.Child)
     {
@@ -349,7 +351,7 @@
 
                     lastId = item.UserId;
                 }
-                
+
                 <div class="end-chat"></div>
 
             </div>
@@ -426,11 +428,11 @@
             <div>
                 افزودن متمم
             </div>
-            
-            
+
+
         </div>
         <div style="@(finishChat == true ? "display: none;" : null)">
-            <button id="openModalButton" data-designer-id="123">باز کردن نظرسنجی</button>
+            <button id="openModalButton" data-designer-id="@designerId" data-customer-id="@myId">باز کردن نظرسنجی</button>
             <div id="modalContainer"></div>
         </div>
 
@@ -456,12 +458,11 @@
 
 
 <script>
-    console.log("hiiiii");
-
     document.getElementById("openModalButton").addEventListener("click", function () {
         const designerId = this.getAttribute("data-designer-id");
+        const customerId = this.getAttribute("data-customer-id");
 
-        fetch(`/FeedbackForms/LoadModalContent?designerId=${designerId}`)
+        fetch(`/FeedbackForms/LoadModalContent?designerId=${designerId}&customerId=${customerId}`)
             .then(response => response.text())
             .then(html => {
                 document.getElementById("modalContainer").innerHTML = html;
@@ -484,6 +485,6 @@
     });
 </script>
 
-@section Scripts{
-    <script src="/js/feedbackForms.js"></script>
+@section Scripts {
+    <script src="/js/feedbackForms.js" asp-append-version="true"></script>
 }
